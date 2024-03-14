@@ -32,8 +32,8 @@ class PagePlanilla( App, ft.View, ddbb ):
     FechaSeleccionadaHoy = datetime.now()
     FechaSeleccionada = FechaSeleccionadaHoy
 
-    mes_text_planilla = ft.Text( value='Mes', expand=3, text_align='center', weight=ft.FontWeight.BOLD )
-    anio_text_planilla = ft.Text( value='Año', expand=2, text_align='center', weight=ft.FontWeight.BOLD )
+    mes_text_planilla = ft.Text( value='Mes', expand=3, text_align='center', size=17, weight=ft.FontWeight.BOLD )
+    anio_text_planilla = ft.Text( value='Año', expand=2, text_align='center', size=17, weight=ft.FontWeight.BOLD )
 
 
     def __init__(self, page = ft.Page ):
@@ -252,7 +252,7 @@ class PagePlanilla( App, ft.View, ddbb ):
             [
                 ft.GestureDetector(
                         mouse_cursor=ft.MouseCursor.MOVE,
-                        drag_interval=50,
+                        drag_interval=100,
                         on_horizontal_drag_start = on_horizontal_drag_start,
                         on_horizontal_drag_update= on_horizontal_drag_update,
                     ),

@@ -139,28 +139,6 @@ def main(page: ft.Page):
 
 
 
-    
-
-    def show_banner_click( text = ''):
-
-        def close_banner(e):
-            page.banner.open = False
-            page.update()
-
-        page.banner = ft.Banner(
-            bgcolor=ft.colors.AMBER_100,
-            leading=ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=40),
-            content=ft.Text(
-                text
-            ),
-            actions=[
-                ft.TextButton("Cerrar", on_click=close_banner),
-            ],
-        )
-        page.banner.open = True
-        page.update()
-
-
     def on_keyboard(e: ft.KeyboardEvent):
 
         #Logger.info(f"Key: {e.key}, Shift: {e.shift}, Control: {e.ctrl}, Alt: {e.alt}, Meta: {e.meta}")
@@ -168,8 +146,7 @@ def main(page: ft.Page):
         if e.key == 'Escape' or e.key == 'Go Back':
 
             #print( len(page.views) )
-            show_banner_click( len(page.views) )
-            
+
             if page.views[0] != page.views[-1]:
                 
                 if len(page.views) > 2:
@@ -183,9 +160,9 @@ def main(page: ft.Page):
                         page.go(top_view.route)
             
 
-
-
     page.on_keyboard_event = on_keyboard
+
+
 
 
     def window_event(e):
@@ -215,6 +192,9 @@ def main(page: ft.Page):
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
+
+
+
     #page.window_center()
     page.on_route_change = route_change
     page.on_view_pop = view_pop
@@ -229,5 +209,5 @@ if __name__ == "__main__":
         target=main, 
         #port=8550, 
         #view=ft.AppView.WEB_BROWSER,
-        #route_url_strategy="hash"
+        route_url_strategy="path"
         )
