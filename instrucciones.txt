@@ -1,0 +1,33 @@
+# Activar entorno virtual
+.venv\Scripts\Activate
+
+# Para Crear una nueva aplicacion
+flet create Planilla
+
+# Iniciar la app en modo auto recarga 
+flet run -r .\main.py
+flet run -r -p 8550 .\main.py
+
+# para compilar App para Windows
+flet build windows -v
+
+# Limpiar Dart
+dart pub cache clean
+
+# Android
+
+flet build apk -vv --org es.cheny --project planilla --build-version 1.0.0
+
+
+# requierements que estan fallando al compilar
+
+pip install --upgrade cython
+
+opencv-python
+Pillow
+numpy
+
+
+# LIMPIAR FLUTTER
+
+dart pub cache clean
