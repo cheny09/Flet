@@ -71,7 +71,7 @@ class App( funciones ):
 
         self.TextTitle = ft.Text( value = self.page.title, size=18, weight=ft.FontWeight.BOLD, )
         
-        self.BtnPlanillaIrAHoy = ft.IconButton( ft.icons.TODAY, scale = 1.15, tooltip = 'Ir al día de hoy', on_click= lambda x, route="/", fun=self.ir_a_hoy: self.menu_callback( x, route = route, funcion = fun, title = 'Planilla' ) ) #
+        self.BtnPlanillaIrAHoy = ft.IconButton( ft.icons.TODAY, scale = 1.25, tooltip = 'Ir al día de hoy', on_click= lambda x, route="/", fun=self.ir_a_hoy: self.menu_callback( x, route = route, funcion = fun, title = 'Planilla' ) ) #
         if self.page.route == '/' :
             
             self.BtnPlanillaIrAHoy.icon = ft.icons.TODAY
@@ -146,8 +146,9 @@ class App( funciones ):
         self.MainAppBar = ft.AppBar(
                 leading = ft.PopupMenuButton(
                         tooltip = 'Mostrar Menú',
+                        icon= ft.icons.MENU,
                         items = self.ItemsMenu,
-                        scale = 1.15,
+                        scale = 1.25,
                     ),
                 leading_width = 40,
                 toolbar_height = 70,
@@ -155,7 +156,7 @@ class App( funciones ):
                 center_title = False,
                 bgcolor = ft.colors.PRIMARY_CONTAINER,
                 actions = [
-                    ft.IconButton( ft.icons.QUESTION_MARK, scale = 1.15, tooltip = 'Mostrar Ayuda', on_click=lambda _: self.ayuda() ),
+                    ft.IconButton( ft.icons.QUESTION_MARK, scale = 1.25, tooltip = 'Mostrar Ayuda', on_click=lambda _: self.ayuda() ),
                     self.BtnPlanillaIrAHoy,
                 ],
                 adaptive=False,

@@ -223,33 +223,46 @@ class PagePlanilla( App, ft.View, ddbb ):
         ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
 
 
+
+        self.deslizar_on = False
         # Se ejecutara al arrastrar en pantalla sobre el horizontal y al soltar
-        def on_hover(e: ft.DragUpdateEvent):
+        def on_horizontal_drag_update(e: ft.DragUpdateEvent):
 
-            #print(  e.delta_x )
+            #print(  e.delta_x, e.primary_delta, self.deslizar_on )
             # Deslizamos el dedo o el cursor de izquierda a derecha
-            if e.delta_x > 20:
-
-                self.fun_inc_mes()
-
-            # Deslizamos el dedo o el cursor de derecha a izquierda
-            if e.delta_x < -20:
+            if e.primary_delta > 5 and self.deslizar_on: 
 
                 self.fun_dec_mes()
 
+            # Deslizamos el dedo o el cursor de derecha a izquierda
+            if e.primary_delta < -5 and self.deslizar_on:
+
+                self.fun_inc_mes()
+
+
+
+        def on_horizontal_drag_start( e: ft.DragStartEvent ):
+
+            #print(e.timestamp)
+            self.deslizar_on = True
+
+
 
         StackPrincipal = ft.Stack(
-        [
-            ft.GestureDetector(
-                    mouse_cursor=ft.MouseCursor.MOVE,
-                    drag_interval=50,
-                    on_hover= on_hover,
-                ),
-            ft.TransparentPointer(ContenedorPrincipal),
-        ],
-            expand=True,
-        
+            [
+                ft.GestureDetector(
+                        mouse_cursor=ft.MouseCursor.MOVE,
+                        drag_interval=50,
+                        on_horizontal_drag_start = on_horizontal_drag_start,
+                        on_horizontal_drag_update= on_horizontal_drag_update,
+                    ),
+                ft.TransparentPointer(ContenedorPrincipal),
+            ],
+            expand=1,
+            width = 480,
         )
+
+
 
         #return ContenedorPrincipal
         self.route= "/"
@@ -582,6 +595,8 @@ class PagePlanilla( App, ft.View, ddbb ):
 
         self.planilla()
 
+        self.deslizar_on = False
+
 
 
     def fun_dec_mes( self ):
@@ -595,6 +610,8 @@ class PagePlanilla( App, ft.View, ddbb ):
             self.FechaSeleccionada=datetime( self.FechaSeleccionada.year,self.FechaSeleccionada.month-1,1 )
 
         self.planilla()
+
+        self.deslizar_on = False
 
 
 
