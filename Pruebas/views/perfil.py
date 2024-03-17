@@ -166,7 +166,7 @@ class PagePerfil( App, ft.View, ddbb ):
 
             self.CheckboxSyncGoogleCalendar.disabled = True
 
-            if self.CheckboxSyncGoogleCalendar.value:
+            if self.CheckboxSyncGoogleCalendar.value == True:
 
                 self.CheckboxSyncGoogleCalendar.value = False
 
@@ -187,7 +187,7 @@ class PagePerfil( App, ft.View, ddbb ):
         ContenedorPrincipal.controls.append( 
             ft.Row(
                 [ 
-                    ft.ElevatedButton("Log", on_click=lambda x: self.log_read()), 
+                    #ft.ElevatedButton("Log", on_click=lambda x: self.log_read()), 
                     self.SesionGoogleCalendar,
                     ft.Container(content=self.GuardarPerfil, alignment = ft.alignment.center_right, expand=1) ],
                 
@@ -198,20 +198,7 @@ class PagePerfil( App, ft.View, ddbb ):
         return ContenedorPrincipal
 
 
-    def log_read(self):
-        
-        log = ' '
-        try:
-            with open("out.log", "r") as f:
-                log = f.readlines()
-
-        except Exception as err:
-
-            log = f"Error al abrir archivo Unexpected {err=}, {type( err )=}"    
-            Logger.error( f"al abrir archivo Unexpected {err=}, {type( err )=}" )
-                         
-
-        self.show_alert_dialog( text=log, title='Log')
+    
 
 
 

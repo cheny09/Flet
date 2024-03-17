@@ -125,7 +125,7 @@ def main(page: ft.Page):
 
     def view_pop(view):
 
-        if len(page.views):
+        if len(page.views) > 1:
             
             page.views.pop()
             top_view = page.views[-1]

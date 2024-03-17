@@ -230,6 +230,8 @@ class storage:
         try:
 
             self.page.client_storage.set( key, value )
+
+            return True
             
         except Exception as err:
             Logger.error( f"Storage set Unexpected {err=}, {type( err )=}" )

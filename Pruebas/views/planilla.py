@@ -271,6 +271,16 @@ class PagePlanilla( App, ft.View, ddbb ):
         self.page.views.append( self )
 
         self.planilla()
+
+
+        if 'WELCOME' in self.UserConfiguration:
+
+            Logger.debug( f"Welcome is: {self.UserConfiguration['WELCOME']}" )
+
+            if self.UserConfiguration['WELCOME']:
+
+                self.welcome()
+                
     
 
 

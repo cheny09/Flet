@@ -159,6 +159,7 @@ class App( funciones ):
                 center_title = False,
                 bgcolor = ft.colors.PRIMARY_CONTAINER,
                 actions = [
+                    ft.IconButton( ft.icons.DOCUMENT_SCANNER, on_click=lambda x: self.log_read()),
                     ft.IconButton( ft.icons.QUESTION_MARK, scale = 1.25, tooltip = 'Mostrar Ayuda', on_click=lambda _: self.ayuda() ),
                     self.BtnPlanillaIrAHoy,
                 ],
@@ -180,10 +181,171 @@ class App( funciones ):
 
         self.reload_config()
 
+        
 
 
 
 
+
+    
+    def welcome(self):
+            
+        cont = []
+
+        cont.append(ft.Text(
+            value= "Indica la cantidad de horas que debes trabajar al año, para que las estadisticas seán reales, en Horas convenio.",
+            size=16,
+            )
+        )
+
+        cont.append(ft.Text(
+            value= "No te preocupes si no lo sabes ahora, podrás modificarlo mas tarde en Mi Perfil.",
+            size=16,
+            )
+        )
+        cont.append(ft.Text(
+            value= "Si su total de horas anuales tiene minutos, indique las horas seguido de dos puntos y luego los minutos sin espacios.",
+            size=16,
+            )
+        )
+
+
+        self.horas_convenio_welcome = ft.TextField(
+            value= '',
+            label= 'Horas Convenio ( Horas:Minutos )'
+            )
+        
+        cont.append(
+            self.horas_convenio_welcome
+        )
+        
+
+        actions = [
+            #ft.OutlinedButton(
+            #    text= 'Cancelar',
+            #    on_click= lambda _: self.fun_guardar_welcome( -1 )
+            #),
+            ft.FilledButton(
+                text= 'Continuar',
+                on_click= lambda _: self.fun_guardar_welcome( 0 )
+            )
+        ]
+
+        self.show_alert_dialog( Content=cont, Actions=actions, title='Primeros pasos' )
+
+
+
+
+
+    def fun_guardar_welcome( self, continuar = 0 ):
+
+        cont = []
+
+        if continuar == 0: 
+
+            Horas_Convenio = self.horas_convenio_welcome.value
+            
+            config_user = self.UserConfiguration
+
+            if Horas_Convenio == '':
+                Horas_Convenio = '1760'
+            else:
+                respu = self.validar_formato_horas_minutos( Horas_Convenio )
+
+                if respu == False:
+
+                    self.welcome()
+
+            config_user['horas_convenio'] = Horas_Convenio
+            config_user['WELCOME'] = False
+
+            Logger.debug( 'Guardamos el convenio y desactivamos la variable welcome.' )
+
+            respuesta = self.storage.set( 'configuration', config_user )
+
+            if respuesta:
+                Logger.info( 'Continuamos con la bienvenida.' )
+                self.fun_guardar_welcome( 1 )
+
+        
+        if continuar > 0:
+            
+            
+            mensajes = ["",
+                "El simbolo __?__ arriba a la derecha significa Ayuda, y en él encontrará informacion sobre que significa cada apartado y como utilizarlo.",
+                "Ahora debes crear o modificar los turnos a tu necesidad, entrando en Menú, Turnos y toca en cada turno para ver sus detalles y modificarlos.",
+                "Cuando hayas verificado tus turnos, luego debes crear tu patron de turnos.",
+                "Recuerda para utilizar correctamente todas las funciones revisa siempre __?__ para ver como utilizarlas."
+            ]
+            
+            if continuar < len( mensajes ):
+
+                #print( mensajes[continuar] )
+
+                cont.append( ft.Markdown( mensajes[continuar] ) )
+
+                atras = continuar - 1
+
+                if continuar == 1:
+                    atras = 0
+
+                continuar+=1
+
+                actions = [
+                    ft.OutlinedButton(
+                        text= 'Atrás',
+                        on_click= lambda _: self.fun_guardar_welcome( atras ) if atras != 0 else self.welcome()
+                    ),
+                    ft.FilledButton(
+                        text= 'Continuar',
+                        on_click= lambda _: self.fun_guardar_welcome( continuar )
+                    )
+                ]
+
+                Title = [
+                    ft.Text(f"Primeros pasos {continuar} - {len( mensajes )}"),
+                    ft.Container( 
+                        content= ft.IconButton( 
+                            ft.icons.CLOSE, 
+                            icon_color=ft.colors.RED,
+                            tooltip="Salir de la bienvenida.",
+                            scale= 1.2,
+                            on_click= self.close_dlg
+                        ), expand=1, 
+                        alignment= ft.alignment.center_right 
+                    )
+                ]
+
+                self.show_alert_dialog( Content=cont, Actions=actions, Title=Title )
+
+
+            elif continuar == len( mensajes ):
+
+                self.close_dlg( continuar )
+
+
+
+
+
+    def log_read(self):
+        
+        log = []
+        try:
+            with open("out.log", "r") as f:
+                read = f.readlines()
+
+            for line in read:
+
+                log.append( ft.Text( line ) )
+
+        except Exception as err:
+
+            line = f"Error al abrir archivo Unexpected {err=}, {type( err )=}" 
+            log.append( ft.Text( line ) )
+            Logger.error( f"al abrir archivo Unexpected {err=}, {type( err )=}" )
+                         
+
+        self.show_alert_dialog( Content=log, title='Log')
     
 
 
@@ -268,11 +430,6 @@ class App( funciones ):
 
                 self.GCal.SYNC_GOOGLE = self.SYNC_GOOGLE = self.UserConfiguration['sync_google']
 
-            if 'WELCOME' in self.UserConfiguration:
-
-                self.WELCOME = self.UserConfiguration['WELCOME']
-
-
             if 'SumarDiferenciaAnioAnterior' in self.UserConfiguration:
                 
                 self.SumarDiferenciaAnioAnterior = self.UserConfiguration['SumarDiferenciaAnioAnterior']
@@ -333,7 +490,7 @@ class App( funciones ):
                             )
                         )
                     
-        self.page.update()
+            self.page.update()
 
 
 
@@ -545,7 +702,7 @@ class App( funciones ):
 
         
 
-    def show_alert_dialog( self, title = '', text = '', Content = False, Actions = False, modal = True, margen_vertical=40, margen_horizontal=10 ):
+    def show_alert_dialog( self, title = '', text = '', Content = False, Actions = False, Title = False, modal = True, margen_vertical=40, margen_horizontal=10 ):
 
         if Actions == False:
 
@@ -556,12 +713,17 @@ class App( funciones ):
 
         if Content == False and text != '':
             Content = []
-            Content.append( ft.Markdown( text ))
+            Content.append( ft.Markdown( text ) )
+
+        if Title == False and title != '':
+            Title = []
+            Title.append( ft.Text( title ) )
+
 
 
         self.dlg_modal = ft.AlertDialog(
             modal=modal, # Si el diálogo se puede descartar haciendo clic en el área de fuera de él.
-            title= ft.Text( title ),
+            title= ft.Row( controls= Title, ),
             content= ft.Column( controls= Content, width = 480, spacing=10, alignment= ft.MainAxisAlignment.CENTER, tight=True, scroll=True ),
             actions= Actions,
             actions_alignment=ft.MainAxisAlignment.END,
@@ -698,12 +860,12 @@ class App( funciones ):
             elif current == '/crear_patron':
 
                 text = ["Para crear un patron lo primero es agregar los turnos en el orden deseado pulsando en elegir turno y luego en el simbolo __+__, recuerda indicar los días libres.",
-                        "Si se a equivocado en un turno, pulsando sobre él se puede eliminar del patron.",
+                        "Si se a equivocado en un turno, pulsando sobre él se puede eliminar del patrón.",
                         "Una vez completado el ciclo, indica la fecha de inicio y de fin.",
-                        "Ahora pulsa sobre el boton de color verde ( Crear ), si el patron se ha creado correctamente recibira un mensaje como:",
-                        "Se ha creado el patron desde el",
-                        "['1', '2', '2024'] al ['31', '12', '2024']",
-                        "Puede limpiar el fromulario pulsando sobre la papelera de color Rojo."]
+                        "Ahora pulsa sobre el boton de color verde ( __Crear__ ), si el patron se ha creado correctamente recibira un mensaje como:",
+                        "Se ha creado el patrón desde el",
+                        f"['1', '2', '{datetime.now().year}'] al ['31', '12', '{datetime.now().year +1}']",
+                        "Puede reiniciar el fromulario pulsando sobre el botón __Limpiar__."]
             
             elif current == '/turnos_edit':
 
