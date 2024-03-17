@@ -203,7 +203,7 @@ class PagePerfil( App, ft.View, ddbb ):
         log = ' '
         try:
             with open("out.log", "r") as f:
-                log = f.read()
+                log = f.readlines()
 
         except Exception as err:
 

@@ -10,12 +10,14 @@ logging.getLogger("flet_runtime").setLevel(logging.WARNING)
 
 logging.basicConfig( 
     level=logging.DEBUG, 
-    filename='out.log', 
-    #filemode='r', 
-    #format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-    #datefmt='%m/%d/%Y %I:%M:%S %p',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+    datefmt='%m/%d/%Y %H:%M:%S',
+    handlers=[
+        logging.FileHandler("out.log"),
+        logging.StreamHandler()
+    ]
     )
-Logger = logging.getLogger('pyplanilla')
+Logger = logging.getLogger('planilla')
 
 PATH_HOME = ''
 
