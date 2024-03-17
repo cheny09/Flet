@@ -322,8 +322,8 @@ class PagePerfil( App, ft.View, ddbb ):
 
             result = 'Tiene una ID de Google Calendar, ¿desea activar la sincronización?' 
             Actions = [
-                ft.TextButton("Si", on_click=lambda x: self.guardar_perfil_activar_sync()),
-                ft.TextButton("No", on_click=lambda x: self.guardar_perfil_activar_sync( force = False )),
+                ft.ElevatedButton("Si", on_click=lambda x: self.guardar_perfil_activar_sync()),
+                ft.OutlinedButton("No", on_click=lambda x: self.guardar_perfil_activar_sync( force = False )),
                 ]
             
         

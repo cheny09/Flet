@@ -85,7 +85,7 @@ def get_credentials_google( page: ft.Page ):
 
         TOKEN = get_token_google( page )
 
-        Logger.info( f"get_calendar_service> token {TOKEN}" )
+        #Logger.info( f"get_calendar_service> token {TOKEN}" )
 
         if TOKEN:
             

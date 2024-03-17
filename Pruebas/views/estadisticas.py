@@ -294,7 +294,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
             #contentMain.append( btn_save )
 
 
-            self.show_alert_dialog( Content=[contentMain], Actions=[btn_save, ft.TextButton("Cerrar", on_click=self.close_dlg),], title=f"Convenio {anio}"  )
+            self.show_alert_dialog( Content=[contentMain], Actions=[btn_save, ft.OutlinedButton("Cerrar", on_click=self.close_dlg),], title=f"Convenio {anio}"  )
 
 
         except Exception as err:
