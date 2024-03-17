@@ -13,7 +13,7 @@ from custom.funciones import (
 )
 from custom.MyDataBase import ddbb
 from custom.GoogleCalendar import MyGoogleCalendar
-from custom.GoogleCalendarSetup import get_calendar_path_token
+from custom.GoogleCalendarSetup import get_token_google
 
 from datetime import datetime, timedelta
 

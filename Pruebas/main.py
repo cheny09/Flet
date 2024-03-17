@@ -1,12 +1,7 @@
 __version__ = "24.03.01"
 
 import flet as ft
-import sys
 
-
-
-from Logger_Path import Path, Logger, PATH
-from config_default import Config, Years, TurnosDefaults
 
 from views.template_route import TemplateRoute
 from views.planilla import PagePlanilla
@@ -16,7 +11,6 @@ from views.turnos import PageTurnos
 from views.patron_turnos import PagePatronTurnos
 from views.sync_google_calendar import PageSyncGCalendar
 
-from datetime import datetime
 
 
 def main(page: ft.Page):
@@ -32,7 +26,9 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    
+    #print( page.client_storage.get_keys('') )
+    #page.client_storage.clear()
+
 
 
     def route_change(route):
@@ -186,7 +182,7 @@ def main(page: ft.Page):
         title=ft.Text("Por favor confirme"),
         content=ft.Text("¿Realmente quieres salir de esta aplicación?"),
         actions=[
-            ft.ElevatedButton("Yes", on_click=yes_click),
+            ft.ElevatedButton("Si", on_click=yes_click),
             ft.OutlinedButton("No", on_click=no_click),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
@@ -204,10 +200,11 @@ def main(page: ft.Page):
 
 
 
-if __name__ == "__main__":
-    ft.app(
-        target=main, 
-        #port=8550, 
-        #view=ft.AppView.WEB_BROWSER,
-        route_url_strategy="path"
-        )
+
+ft.app(
+    target=main, 
+    #port=8550, 
+    #view=ft.WEB_BROWSER,
+    route_url_strategy="path",
+    use_color_emoji=True,
+    )

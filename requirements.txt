@@ -9,6 +9,8 @@ oauth2client<4.0.0
 setuptools
 wheel
 qrcode
+pypng
 Pillow
 opencv-python
 numpy
+cryptography

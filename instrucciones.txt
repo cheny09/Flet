@@ -31,3 +31,9 @@ numpy
 # LIMPIAR FLUTTER
 
 dart pub cache clean
+
+
+
+# VARIABLES DE ENTORNO NECESARIAS
+
+SET MY_APP_SECRET_KEY="GVUYAgsyt56tyA"

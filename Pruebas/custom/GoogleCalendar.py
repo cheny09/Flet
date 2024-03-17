@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from custom.GoogleCalendarSetup import get_calendar_service, get_calendar_path_token
+from custom.GoogleCalendarSetup import get_calendar_service, get_token_google
 
 from Logger_Path import Logger, PATH
 

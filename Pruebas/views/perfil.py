@@ -4,7 +4,7 @@ import json
 import os
 from datetime import datetime
 
-from Logger_Path import Path, Logger, PATH
+from Logger_Path import Path, Logger, PATH, PATH_HOME
 
 from custom.app import App
 from custom.funciones import (
@@ -16,9 +16,19 @@ from custom.funciones import (
     storage
 )
 from custom.MyDataBase import ddbb
-from custom.GoogleCalendarSetup import get_calendar_path_token, get_calendar_service
+from custom.GoogleCalendarSetup import (
+    get_token_google, 
+    get_calendar_service, 
+    GOOGLE_PROVIDER,
+    SCOPES,
+    get_calendar_service_v2,
+    encrypt, decrypt,
+    SECRET_KEY
+)
 
 from config_default import Config, Years, TurnosDefaults
+
+from flet.auth.providers import GoogleOAuthProvider
 
 
 class PagePerfil( App, ft.View, ddbb ):
@@ -38,7 +48,9 @@ class PagePerfil( App, ft.View, ddbb ):
 
         self.mi_perfil()
 
-        self.show_alert_dialog( text= str( get_calendar_path_token( self.page ) ), title='Token_google' )
+
+
+        #self.show_alert_dialog( text= str( get_token_google( self.page ) ), title='Token_google' )
 
 
 
@@ -94,25 +106,12 @@ class PagePerfil( App, ft.View, ddbb ):
                     on_click= lambda x, btn= self.IDGcalendarPerfil: self.calendars_google_list_dialog( btn )
                 )
         
-        if get_calendar_path_token( self.page ) == False:
-
-            self.ObtenerIDsGoogleCalendar.text = "Iniciar Sesion en mi Gmail"
-        
 
         ContenedorPrincipal.controls.append( ft.Container(
             content= self.ObtenerIDsGoogleCalendar,
         ) )
 
-        self.CerrarSesionGoogleCalendar = ft.TextButton(
-                    text="Salir de Gmail",
-                    on_click= lambda x, btn= self.IDGcalendarPerfil: self.exit_google_calendar( btn )
-                )
         
-        if get_calendar_path_token( self.page ):
-
-            ContenedorPrincipal.controls.append( ft.Container(
-                content= self.CerrarSesionGoogleCalendar,
-            ) )
 
         
         ContenedorPrincipal.controls.append( ft.Container(
@@ -132,6 +131,42 @@ class PagePerfil( App, ft.View, ddbb ):
                 content= self.CheckboxSyncGoogleCalendar,
                 alignment = ft.alignment.center_right,
             ) )
+        
+
+        """
+        def login_click(e):
+            self.page.login(GOOGLE_PROVIDER)
+
+
+        def on_login(e):
+            print("Login error:", e.error)
+            print("Access token:", self.page.auth.token.to_json())
+            print("User ID:", self.page.auth.user.id)
+
+            self.page.client_storage.set( 'token_google', encrypt(self.page.auth.token.to_json(), SECRET_KEY ) )
+
+        self.page.on_login = on_login
+        """
+
+
+
+        self.SesionGoogleCalendar = ft.ElevatedButton(
+                    text="Iniciar en Google",
+                    on_click= lambda x, btn= self.IDGcalendarPerfil: self.calendars_google_list_dialog( btn )
+                )
+        
+        if get_token_google( self.page ):
+
+            self.SesionGoogleCalendar.text="Salir de Google"
+            self.SesionGoogleCalendar.on_click= lambda x, btn= self.IDGcalendarPerfil: self.exit_google_calendar( btn )
+        
+        else:
+
+            self.ObtenerIDsGoogleCalendar.disabled = True
+
+            self.CheckboxSyncGoogleCalendar.disabled = True
+
+
 
         self.GuardarPerfil = ft.FilledButton(
                     text="Guardar",
@@ -139,11 +174,15 @@ class PagePerfil( App, ft.View, ddbb ):
                 )
                 
         ContenedorPrincipal.controls.append( 
-            ft.Container(
-                content= self.GuardarPerfil,
-                alignment = ft.alignment.center_right,
-                margin=10,
+            ft.Row(
+                [ 
+                    #ft.ElevatedButton("Login Google", on_click=login_click), 
+                    self.SesionGoogleCalendar,
+                    ft.Container(content=self.GuardarPerfil, alignment = ft.alignment.center_right, expand=1) ],
+                
             ) )
+                
+        
 
         return ContenedorPrincipal
 
@@ -172,7 +211,7 @@ class PagePerfil( App, ft.View, ddbb ):
     def calendars_google_list_dialog( self, button ):
         try:
             
-            if get_calendar_path_token( self.page ):
+            if get_token_google( self.page ):
 
                 contentMain = []
 
@@ -207,12 +246,19 @@ class PagePerfil( App, ft.View, ddbb ):
 
             else:
 
-                contentMain = [ ft.Text( get_calendar_service( self.page ) ),
-                               ft.TextButton( 'Login Google',  ) ]
+                service = get_calendar_service( self.page )
 
-                self.show_alert_dialog( Content=contentMain, title='Error al iniciar sesion'  )
+                if not service:
+                    contentMain = [ ft.Text( service ) ]
 
-                self.page.update()
+                    self.show_alert_dialog( Content=contentMain, title='Error al iniciar sesion'  )
+
+                    self.page.update()
+
+                else:
+                    self.page.go( '/reload' )
+                    self.page.go( '/perfil' )    
+                
 
         except Exception as err:
             Logger.error( f"calendars_google_list_dialog Unexpected {err=}, {type( err )=}" )
@@ -221,13 +267,13 @@ class PagePerfil( App, ft.View, ddbb ):
 
     def exit_google_calendar(self, btn):
 
-        token = get_calendar_path_token( self.page )
+        token = get_token_google( self.page )
 
         Logger.info( f"Saliendo de Google" )
 
         if token:
 
-            self.page.client_storage.remove( "token_google" )
+            self.storage.remove( "token_google" )
 
         btn.value = ''
 
@@ -306,6 +352,8 @@ class PagePerfil( App, ft.View, ddbb ):
             self.show_alert_dialog( Actions = Actions, text=str( result ), title= title ) 
 
             self.reload_menu()
+
+
 
 
 
@@ -545,8 +593,8 @@ class PageBackup( App, ft.View, ddbb ):
 
         self.CrearBackup = ft.FilledButton(
                     text="Crear",
-                    icon=ft.icons.FILE_DOWNLOAD,
-                        on_click=lambda _: save_file_dialog.get_directory_path(),
+                    icon=ft.icons.SAVE,
+                        on_click=lambda _: save_file_dialog.get_directory_path( initial_directory=PATH_HOME, ),
                 )
         
         RowBtnBackup.controls.append( 
@@ -564,6 +612,7 @@ class PageBackup( App, ft.View, ddbb ):
                             allow_multiple=False,
                             file_type= ft.FilePickerFileType.CUSTOM ,
                             allowed_extensions= ['json'],
+                            initial_directory=PATH_HOME,
                         ),
                 )
         

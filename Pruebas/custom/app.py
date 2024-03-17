@@ -1,6 +1,6 @@
 import flet as ft
 
-from Logger_Path import Path, Logger, PATH
+from Logger_Path import Path, Logger, PATH, PATH_HOME
 from config_default import Config, Years, TurnosDefaults
 
 from custom.funciones import (
@@ -12,6 +12,8 @@ from custom.funciones import (
     storage
 )
 from custom.GoogleCalendar import MyGoogleCalendar
+
+
 
 from views.template_route import TemplateRoute
 
@@ -46,6 +48,7 @@ class App( funciones ):
         print( 'platform', self.page.platform)
 
         self.storage = storage( self.page )
+
 
         self.UserConfiguration = Config
         self.DataYears = Years
@@ -151,7 +154,7 @@ class App( funciones ):
                         scale = 1.25,
                     ),
                 leading_width = 40,
-                toolbar_height = 70,
+                toolbar_height = 80,
                 title = self.TextTitle,
                 center_title = False,
                 bgcolor = ft.colors.PRIMARY_CONTAINER,
@@ -173,10 +176,15 @@ class App( funciones ):
         self.GCal.PATH = PATH
 
         self.GCal.BORRAR_TODOS_EVENTOS_DEL_DIA = False
-        
+
 
         self.reload_config()
 
+
+
+
+
+    
 
 
 
@@ -543,7 +551,7 @@ class App( funciones ):
 
             Actions = [
                 #ft.TextButton("Yes", on_click=self.close_dlg),
-                ft.TextButton("Cerrar", on_click=self.close_dlg),
+                ft.OutlinedButton("Cerrar", on_click=self.close_dlg),
             ]
 
         if Content == False and text != '':
@@ -674,15 +682,9 @@ class App( funciones ):
 
                 text.append( f"Los archivos tienen el nombre de la fecha y hora de creación, seguido de __backup.json__." )
 
-                if self.page.platform == ft.PagePlatform.ANDROID:
-                    #text.append( "En cada actualización se genera una nueva copia de seguridad automática." )
-                    text.append( f"Las copias de seguridad se guardan en: Documents/Planilla Turnos de Trabajo" )
-                    text.append( f"Para restaurar una copia de seguridad seleccionar el archivo de la carpeta: Documents/Planilla Turnos de Trabajo" )
-
-                else:
-                    text.append( f"Las copias de seguridad se guardan en: Documents/Planilla" )
-                    text.append( f"Para restaurar una copia de seguridad seleccionar el archivo __backup.json__ de la carpeta: Documents/Planilla" )
-                
+                text.append( f"Las copias de seguridad se guardan en: {PATH_HOME}" )
+                text.append( f"Para restaurar una copia de seguridad seleccionar el archivo __backup.json__ de la carpeta: {PATH_HOME}" )
+            
                 text.append( f"__Limpiar base de datos__" )
                 text.append( f"Sirve para reducir el tamaño de la base de datos, y eliminar datos redundantes." )
                 

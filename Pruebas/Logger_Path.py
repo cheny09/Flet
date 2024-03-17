@@ -1,13 +1,30 @@
+import flet as ft
+
 import os
 from pathlib import Path
 import json
 import logging as Logger
+
 Logger.getLogger("flet_core").setLevel(Logger.INFO) # (debug, info, warning, error y critical)
 Logger.basicConfig(level=Logger.INFO)
 
+PATH_HOME = ''
+
+Documentos = os.path.join( Path.home(), 'Documentos' )
+Documents = os.path.join( Path.home(), 'Documents' )
+
+if os.path.exists( Documentos ):
+    Logger.info( 'Documentos' )
+    PATH_HOME = Documentos
+
+elif os.path.exists( Documents ):
+    Logger.info( 'Documents' )
+    PATH_HOME = Documents
+
+
 PATH = ''
 
-import flet as ft
+
 
 def main(page: ft.Page):
 

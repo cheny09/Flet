@@ -13,7 +13,7 @@ from custom.funciones import (
 )
 from custom.MyDataBase import ddbb
 from custom.GoogleCalendar import MyGoogleCalendar
-from custom.GoogleCalendarSetup import get_calendar_path_token
+from custom.GoogleCalendarSetup import get_token_google
 
 import calendar
 from datetime import datetime, timedelta
@@ -32,8 +32,8 @@ class PagePlanilla( App, ft.View, ddbb ):
     FechaSeleccionadaHoy = datetime.now()
     FechaSeleccionada = FechaSeleccionadaHoy
 
-    mes_text_planilla = ft.Text( value='Mes', expand=3, text_align='center', size=17, weight=ft.FontWeight.BOLD )
-    anio_text_planilla = ft.Text( value='Año', expand=2, text_align='center', size=17, weight=ft.FontWeight.BOLD )
+    mes_text_planilla = ft.Text( value='Mes', expand=4, text_align='center', size=16, weight=ft.FontWeight.BOLD )
+    anio_text_planilla = ft.Text( value='Año', expand=2, text_align='center', size=16, weight=ft.FontWeight.BOLD )
 
 
     def __init__(self, page = ft.Page ):
