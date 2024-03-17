@@ -342,7 +342,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
             self.patron_de_turnos = new
             
-            #Logger.info( 'Patron de turnos ' + str( new ) )
+            Logger.debug( 'Patron de turnos ' + str( new ) )
 
         else:
             self.patron_de_turnos = []
@@ -354,7 +354,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             TurnoSelectPatron.key = '0'
             TurnoSelectPatron.style.bgcolor = '#ffffff'
 
-            #Logger.info( 'Patron de turnos vaciado' + str( self.patron_de_turnos ) )
+            Logger.debug( 'Patron de turnos vaciado' + str( self.patron_de_turnos ) )
             self.show_alert_dialog( text=str( 'Patron de turnos vaciado.' ), title='' )
     
 
@@ -862,7 +862,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
                 Logger.error( f"al crear QR {err=}, {type( err )=}" )
             else:
 
-                #Logger.info( str( data ) )
+                Logger.debug( f"Data: {str( data )}" )
                 Logger.info( f"Compartiendo el patron de turnos { str( nombre ) }." )
 
                 #Mostramos el QR en pantalla

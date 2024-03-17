@@ -166,7 +166,7 @@ class ddbb( funciones ):
                     self.DataYears[str( anio )][str( mes )][str( dia )]['festivo'] = int( festivo )
                 
 
-                Logger.info( self.DataYears[str( anio )][str( mes )][str( dia )] )
+                Logger.debug( self.DataYears[str( anio )][str( mes )][str( dia )] )
 
             except Exception as err:              
                 Logger.error( f"Unexpected {err=}, {type( err )=}" )

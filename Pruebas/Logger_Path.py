@@ -3,10 +3,19 @@ import flet as ft
 import os
 from pathlib import Path
 import json
-import logging as Logger
+import logging
 
-Logger.getLogger("flet_core").setLevel(Logger.INFO) # (debug, info, warning, error y critical)
-Logger.basicConfig(level=Logger.INFO)
+logging.getLogger("flet_core").setLevel(logging.WARNING) # (debug, info, warning, error y critical)
+logging.getLogger("flet_runtime").setLevel(logging.WARNING)
+
+logging.basicConfig( 
+    level=logging.DEBUG, 
+    filename='out.log', 
+    #filemode='r', 
+    #format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+    #datefmt='%m/%d/%Y %I:%M:%S %p',
+    )
+Logger = logging.getLogger('pyplanilla')
 
 PATH_HOME = ''
 
@@ -14,11 +23,11 @@ Documentos = os.path.join( Path.home(), 'Documentos' )
 Documents = os.path.join( Path.home(), 'Documents' )
 
 if os.path.exists( Documentos ):
-    Logger.info( 'Documentos' )
+    Logger.debug( 'Documentos' )
     PATH_HOME = Documentos
 
 elif os.path.exists( Documents ):
-    Logger.info( 'Documents' )
+    Logger.debug( 'Documents' )
     PATH_HOME = Documents
 
 
@@ -50,11 +59,11 @@ def main(page: ft.Page):
             if result:
                 #Directorio Principal Seguro de la app /data/Android/{package-name}/
                 PATH_DATA_ANDROID = str(result.toString())
-                Logger.info("PATH SECURE")
+                Logger.debug("PATH SECURE")
             else:
                 #Directorio de la app de usuario no seguro
                 PATH_DATA_ANDROID = app_storage_path()   # NOT SECURE
-                Logger.info("PATH NOT SECURE")
+                Logger.debug("PATH NOT SECURE")
 
             PATH = PATH_DATA_ANDROID
 

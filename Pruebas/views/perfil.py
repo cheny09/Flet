@@ -166,6 +166,17 @@ class PagePerfil( App, ft.View, ddbb ):
 
             self.CheckboxSyncGoogleCalendar.disabled = True
 
+            if self.CheckboxSyncGoogleCalendar.value:
+
+                self.CheckboxSyncGoogleCalendar.value = False
+
+                self.guardar_perfil()
+
+
+
+
+
+
 
 
         self.GuardarPerfil = ft.FilledButton(
@@ -176,7 +187,7 @@ class PagePerfil( App, ft.View, ddbb ):
         ContenedorPrincipal.controls.append( 
             ft.Row(
                 [ 
-                    #ft.ElevatedButton("Login Google", on_click=login_click), 
+                    ft.ElevatedButton("Log", on_click=lambda x: self.log_read()), 
                     self.SesionGoogleCalendar,
                     ft.Container(content=self.GuardarPerfil, alignment = ft.alignment.center_right, expand=1) ],
                 
@@ -185,6 +196,24 @@ class PagePerfil( App, ft.View, ddbb ):
         
 
         return ContenedorPrincipal
+
+
+    def log_read(self):
+        
+        log = ' '
+        try:
+            with open("out.log", "r") as f:
+                log = f.read()
+
+        except Exception as err:
+
+            log = f"Error al abrir archivo Unexpected {err=}, {type( err )=}"    
+            Logger.error( f"al abrir archivo Unexpected {err=}, {type( err )=}" )
+                         
+
+        self.show_alert_dialog( text=log, title='Log')
+
+
 
 
     def mi_perfil( self ):
@@ -269,7 +298,7 @@ class PagePerfil( App, ft.View, ddbb ):
 
         token = get_token_google( self.page )
 
-        Logger.info( f"Saliendo de Google" )
+        Logger.debug( f"Saliendo de Google" )
 
         if token:
 
@@ -439,7 +468,7 @@ class PageBackup( App, ft.View, ddbb ):
 
                             #SharedStorage().copy_to_shared( private_file=filename, collection = Environment.DIRECTORY_DOCUMENTS )
 
-                            Logger.info( f"Archivo {filename} creado." )
+                            Logger.debug( f"Archivo {filename} creado." )
 
                             
                         except Exception as err:              
@@ -522,14 +551,14 @@ class PageBackup( App, ft.View, ddbb ):
 
                                     self.storage.set( file_name_sin_extension, conf[file_name] )
 
-                                    Logger.info( f"Archivo {file_name_sin_extension} creado." )
+                                    Logger.debug( f"Archivo {file_name_sin_extension} creado." )
 
                             #si son ficheros sueltos del tipo json
                             else:
                                 
                                 self.storage.set( file_name_sin_extension, conf )
 
-                                Logger.info( f"Archivo {file_name_sin_extension} restaurado." )
+                                Logger.debug( f"Archivo {file_name_sin_extension} restaurado." )
 
                             
                         except Exception as err:              

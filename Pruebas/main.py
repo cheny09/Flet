@@ -2,6 +2,7 @@ __version__ = "24.03.01"
 
 import flet as ft
 
+from Logger_Path import Logger
 
 from views.template_route import TemplateRoute
 from views.planilla import PagePlanilla
@@ -137,7 +138,7 @@ def main(page: ft.Page):
 
     def on_keyboard(e: ft.KeyboardEvent):
 
-        #Logger.info(f"Key: {e.key}, Shift: {e.shift}, Control: {e.ctrl}, Alt: {e.alt}, Meta: {e.meta}")
+        Logger.debug(f"Key: {e.key}, Shift: {e.shift}, Control: {e.ctrl}, Alt: {e.alt}, Meta: {e.meta}")
 
         if e.key == 'Escape' or e.key == 'Go Back':
 

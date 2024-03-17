@@ -45,7 +45,7 @@ class App( funciones ):
 
         self.page = page
         #self.page.platform = ft.PagePlatform.ANDROID
-        print( 'platform', self.page.platform)
+        Logger.debug( f"Platform, {self.page.platform}")
 
         self.storage = storage( self.page )
 

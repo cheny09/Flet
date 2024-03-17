@@ -226,7 +226,7 @@ class PageSyncGCalendar( App, ft.View, ddbb ):
             events_day = G_Cal.events_day()
             for i in events_day:
 
-                Logger.info( "Eliminando evento anterior... " + str( events_day[i]['id'] ) )
+                Logger.debug( "Eliminando evento anterior... " + str( events_day[i]['id'] ) )
                 G_Cal.delete_event_day( events_day[i]['id'] )  
             
             if sincronizarar_g_calendar: #G_Cal.AllDay == False:

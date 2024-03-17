@@ -905,7 +905,7 @@ class PagePlanilla( App, ft.View, ddbb ):
 
         self.lista_fecha.append( self.FechaSeleccionada.year ) 
 
-        Logger.info( f"{str( self.lista_fecha )} > Guardando nuevos detalles." )
+        Logger.debug( f"{str( self.lista_fecha )} > Guardando nuevos detalles." )
         
         ID_turno_sel = str( self.TurnoDetalle.key )
         
@@ -1048,7 +1048,7 @@ class PagePlanilla( App, ft.View, ddbb ):
         #print( events_day )
         for i in events_day:
 
-            Logger.info( str( self.lista_fecha ) + " > Eliminando evento anterior... " + str( events_day[i]['id'] ) )
+            Logger.debug( str( self.lista_fecha ) + " > Eliminando evento anterior... " + str( events_day[i]['id'] ) )
             self.GCal.delete_event_day( events_day[i]['id'] )  
         
         if sincronizarar_g_calendar: #self.GCal.AllDay == False:

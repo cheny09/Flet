@@ -85,7 +85,7 @@ def get_credentials_google( page: ft.Page ):
 
         TOKEN = get_token_google( page )
 
-        #Logger.info( f"get_calendar_service> token {TOKEN}" )
+        Logger.debug( f"get_calendar_service> token {TOKEN}" )
 
         if TOKEN:
             
@@ -111,7 +111,7 @@ def get_credentials_google( page: ft.Page ):
             
             page.client_storage.set( 'token_google', encrypt( creds.to_json(), SECRET_KEY ) )
 
-            #Logger.info( f"get_calendar_service> {creds.to_json()}" )
+            Logger.debug( f"get_calendar_service> {creds.to_json()}" )
 
         return creds
 
@@ -185,11 +185,11 @@ def get_calendar_service_v2( page: ft.Page ):
                 'token_uri': 'https://oauth2.googleapis.com/token'
             }
 
-            Logger.info( f"get_calendar_service_v2> token {TOKEN}" )
+            Logger.debug( f"get_calendar_service_v2> token {TOKEN}" )
 
 
 
-            #creds = Credentials.from_authorized_user_info(TOKEN)
+            #creds = Credentials.from_authorized_user_debug(TOKEN)
 
             service = build( 'calendar', 'v3', credentials=token_ )
 
