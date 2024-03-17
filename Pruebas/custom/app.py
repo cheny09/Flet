@@ -194,29 +194,32 @@ class App( funciones ):
 
         cont.append(ft.Text(
             value= "Indica la cantidad de horas que debes trabajar al año, para que las estadisticas seán reales, en Horas convenio.",
-            size=16,
+            size=15,
             )
         )
 
         cont.append(ft.Text(
             value= "No te preocupes si no lo sabes ahora, podrás modificarlo mas tarde en Mi Perfil.",
-            size=16,
+            size=15,
             )
         )
         cont.append(ft.Text(
             value= "Si su total de horas anuales tiene minutos, indique las horas seguido de dos puntos y luego los minutos sin espacios.",
-            size=16,
+            size=15,
             )
         )
 
+        cont.append( ft.Container(
+            content= ft.Text( 'Convenio:', weight='BOLD' ),
+        ) )
 
         self.horas_convenio_welcome = ft.TextField(
             value= '',
-            label= 'Horas Convenio ( Horas:Minutos )'
+            label= 'Horas:Minutos'
             )
         
         cont.append(
-            self.horas_convenio_welcome
+            ft.Container( content= self.horas_convenio_welcome, padding=10 )
         )
         
 
