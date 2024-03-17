@@ -65,7 +65,7 @@ class PagePerfil( App, ft.View, ddbb ):
 
         self.ConvenioPerfil = ft.TextField(
             value='',
-            #label="Comentario", 
+            label="Horas:Minutos", 
             hint_text="Introduce aquí tu convenio.",
             tooltip = 'Introduce aquí las horas por convenio que te pertenecen.',
             )
