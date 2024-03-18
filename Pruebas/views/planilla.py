@@ -128,7 +128,7 @@ class PagePlanilla( App, ft.View, ddbb ):
                 on_click = lambda x, id=i: self.page_detalle_dia( id ), 
                 #data= { 'mes': 0, 'dia': 0, 'year': 0 }, 
                 height = 50,
-                expand=1, 
+                expand=1,
                 style = ft.ButtonStyle(
                     padding=0,
                     bgcolor=ft.colors.YELLOW,

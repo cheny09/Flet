@@ -185,7 +185,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
                             ft.OutlinedButton( text= 'Limpiar', icon= ft.icons.CLEANING_SERVICES, icon_color= ft.colors.RED, expand=1,
                             on_click=lambda x: self.borrar_del_patron_de_turnos(),    
                             ),
-                            ft.FilledButton( text= 'Crear', icon= ft.icons.SAVE, icon_color= ft.colors.GREEN, expand=1,
+                            ft.FilledButton( text= 'Crear', icon= ft.icons.SAVE, expand=1,
                             on_click=lambda x: self.crear_patron_de_turnos(),    
                             ),
                         ]
@@ -374,6 +374,23 @@ class PagePatronTurnos( App, ft.View, ddbb ):
                 text = turno['siglas'], 
                 on_click = lambda x, id=id: self.borrar_del_patron_de_turnos( id ), 
                 #data= { 'id': id, 'turno': turno }, 
+                content = ft.Stack(
+                    controls= [
+                        ft.Container( 
+                            content= ft.Text( turno['siglas'], scale= 1.2, ),
+                            alignment= ft.alignment.center
+                        ),
+                        ft.Container( 
+                            content= ft.Icon( 
+                                ft.icons.CLOSE,
+                                scale= 0.5,
+                            ),
+                            #alignment= ft.alignment.top_right
+                            top = -5,
+                            right = -5,
+                        )
+                    ],
+                ),
                 style = ft.ButtonStyle(
                     padding=0,
                     bgcolor= turno['color'],
