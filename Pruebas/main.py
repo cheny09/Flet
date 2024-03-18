@@ -201,11 +201,12 @@ def main(page: ft.Page):
 
 
 
-
-ft.app(
-    target=main, 
-    #port=8550, 
-    #view=ft.WEB_BROWSER,
-    route_url_strategy="path",
-    use_color_emoji=True,
-    )
+if __name__ == "__main__":
+    
+    ft.app(
+        target=main, 
+        #port=8550, 
+        #view=ft.WEB_BROWSER,
+        route_url_strategy="path",
+        use_color_emoji=True,
+        )
