@@ -722,7 +722,7 @@ class App( funciones ):
             Content = []
             Content.append( ft.Markdown( text ) )
 
-        if Title == False and title != '':
+        if Title == False:
             Title = []
             Title.append( ft.Text( title ) )
 

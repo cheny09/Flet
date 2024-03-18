@@ -7,6 +7,7 @@ import logging
 
 logging.getLogger("flet_core").setLevel(logging.WARNING) # (debug, info, warning, error y critical)
 logging.getLogger("flet_runtime").setLevel(logging.WARNING)
+logging.getLogger("flet.fastapi").setLevel(logging.WARNING)
 
 logging.basicConfig( 
     level=logging.DEBUG, 

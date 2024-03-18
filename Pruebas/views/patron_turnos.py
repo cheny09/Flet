@@ -257,7 +257,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
     def page_patron_de_turnos( self ):
 
-        self.TextTitle.value = self.page.title = "Crear Patron de Turnos"
+        self.TextTitle.value = self.page.title = "Crear Patrón de Turnos"
     
         TurnoSelectPatron = self.TurnosSelectPatronTurnos
         TurnoSelectPatron.text='Ninguno'
@@ -308,8 +308,6 @@ class PagePatronTurnos( App, ft.View, ddbb ):
         patron = self.CardPatronPatronTurnos
         patron.controls.clear()
         
-        #self.limpiar_turnos_patron()
-
         new = []
 
         total_patron = len( self.patron_de_turnos )
@@ -345,6 +343,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             Logger.debug( 'Patron de turnos ' + str( new ) )
 
         else:
+            
             self.patron_de_turnos = []
             self.FechaInicioPatronTurnos.value = ''
             self.FechaFinPatronTurnos.value = ''
@@ -355,7 +354,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             TurnoSelectPatron.style.bgcolor = '#ffffff'
 
             Logger.debug( 'Patron de turnos vaciado' + str( self.patron_de_turnos ) )
-            self.show_alert_dialog( text=str( 'Patron de turnos vaciado.' ), title='' )
+            self.show_alert_dialog( text=str( 'Patron de turnos vaciado.' ), title='Patrón de Turnos' )
     
 
         self.page.update()
