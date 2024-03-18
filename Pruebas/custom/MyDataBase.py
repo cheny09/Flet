@@ -454,9 +454,9 @@ class ddbb( funciones ):
         
 
 
-    def estadisticas_ddbb( self, anio, mes = 'false' ):
+    def estadisticas_ddbb( self, anio, mes = None ):
 
-        if mes == 'false':
+        if mes == None:
             Logger.debug( f"Buscando estadisticas para el {str( anio )}" )
         else:
             Logger.debug( f"Buscando estadisticas para el {str( mes )} del {str( anio )}" )
@@ -476,7 +476,7 @@ class ddbb( funciones ):
 
             horasConvenio = self.UserConfiguration['horas_convenio']
 
-        if ( mes != 'false' ):
+        if ( mes != None ):
             if self.MODO_DB: #MODO DB True
                 mes = f"AND mes = '{mes}'"
             anual = False

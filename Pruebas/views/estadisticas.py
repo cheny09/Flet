@@ -12,6 +12,7 @@ from custom.funciones import (
     storage
 )
 from custom.MyDataBase import ddbb
+from custom.datepicker import DatePicker
 
 from datetime import datetime, timedelta
 
@@ -39,6 +40,8 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
+
+        self.rango_fechas_personalizado = None
 
         self.view_stats()
 
@@ -77,10 +80,14 @@ class PageEstadisticas( App, ft.View, ddbb ):
             expand=1,
             on_change= lambda x: self.stats(),
         )
+
+        self.AmpliarBusquedaStats = ft.IconButton( ft.icons.DATE_RANGE, icon_size=40, tooltip="Realizar busqueda concreta", on_click= lambda _: self.seleccionar_rango_de_fechas_personalizado_stats() )
+
         ContenedorPrincipalPageEstadisticas.controls.append( ft.Row(
             [
                 self.AnioStats,
                 self.MesStats,
+                self.AmpliarBusquedaStats
             ],
         ) )
         
@@ -114,7 +121,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
             expand=True,
         )
 
-        self.stats(False)
+        self.stats()
 
         ContenedorPrincipalPageEstadisticas.controls.append( ft.Container( chart ) )
 
@@ -131,6 +138,102 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
 
 
+    def seleccionar_rango_de_fechas_personalizado_stats( self ):
+
+        RangeYears = self.range_anios_en_ddbb()
+        
+        self.rango_fechas_personalizado = []
+
+        Logger.debug( f"rango_fechas_personalizado: {self.rango_fechas_personalizado}" )
+
+        content = []
+            
+        
+        date_picker = DatePicker(
+            page= self.page,
+            #on_change=change_date,
+            #on_dismiss=date_picker_dismissed,
+            first_date=datetime(RangeYears[0], 1, 1),
+            last_date=datetime(RangeYears[1], 12, 31),
+        )
+
+        fecha_inicio = ft.TextField( value='', label='Fecha de inicio', expand=1, )
+
+        inicio = ft.IconButton( icon=ft.icons.CALENDAR_MONTH, on_click= lambda _, x = fecha_inicio: date_picker.pick_date( x ),  ) # 
+
+
+        
+        content.append(
+            ft.Row(
+                controls=[
+                    inicio,
+                    fecha_inicio
+                ]
+            )
+        )
+
+
+        fecha_fin = ft.TextField( value='', label='Fecha de fin', expand=1, )
+        fin = ft.IconButton( icon=ft.icons.CALENDAR_MONTH, on_click= lambda _, x = fecha_fin: date_picker.pick_date( x ), )
+        content.append(
+            ft.Row(
+                controls=[
+                    fin,
+                    fecha_fin
+                ]
+            )
+        )
+
+
+        def mostrar():
+
+            self.rango_fechas_personalizado = [
+                fecha_inicio.value,
+                fecha_fin.value
+            ]
+            
+            self.stats( False )
+
+            self.close_banner('')
+
+
+
+        actions = [
+            ft.OutlinedButton( 'Cerrar', on_click= self.close_banner ),
+            ft.FilledButton( 'Mostrar', on_click= lambda x: mostrar()  ),    
+        ]
+
+
+
+        self.page.banner = ft.Banner(
+            bgcolor=ft.colors.AMBER_100,
+            #leading=ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=40),
+            content= ft.Column( controls= content, spacing=10, alignment= ft.MainAxisAlignment.CENTER, ),
+            actions= actions,
+        )
+
+        self.page.banner.open = True
+        self.page.update()
+
+
+
+
+    def close_banner(self, e):
+        self.page.banner.open = False
+        self.page.update()
+
+
+
+
+    def show_banner_click(self, e):
+        self.page.banner.open = True
+        self.page.update()
+
+
+
+
+
+
 
     def stats(self, recarga = True):
 
@@ -140,7 +243,16 @@ class PageEstadisticas( App, ft.View, ddbb ):
         self.AñoSeleccionada = anio
         self.MesSeleccionada = mes
 
-        if mes != '0':
+        if recarga:
+            self.rango_fechas_personalizado = None
+
+        personalizado = self.rango_fechas_personalizado
+
+        if personalizado != None:
+
+            stats = None
+
+        elif mes != '0':
 
             stats = self.estadisticas_ddbb( anio, mes )
 
@@ -152,67 +264,69 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
         self.ListadoEstadisticasColumn.controls = []
 
-        for stat in stats:
-
-            if stat != 'siglas':
-                
-                color_personalizado = ft.ColorScheme.on_surface
-
-                if stat == 'DiferenciaConvenio' or stat == 'DifConvenioAnioAnterior':
-                    
-                    if stats[stat].find( '-' ) >= 0:
-                        color_personalizado = ft.colors.RED
-                    else:
-                        color_personalizado = ft.colors.GREEN
-
-                self.ListadoEstadisticasColumn.controls.append(
-                    ft.Container( ft.Row(
-                            [
-                                ft.Text( stat, weight='BOLD', expand=2, color= color_personalizado ),
-                                ft.Text( stats[stat], weight='BOLD', expand=1, color= color_personalizado ),
-                            ],
-                            alignment= ft.alignment.center,
-                        ),
-                        on_click= lambda x, stat = stat: self.on_ItemListStats( stat )
-                    )
-                )
-
-
         self.BarGroupStatsBar.clear()
         self.BarLabelsStatsBar.clear()
 
+        if stats:
+        
+            for stat in stats:
 
-        index = 0
-        for turno in stats['siglas']:
+                if stat != 'siglas':
+                    
+                    color_personalizado = ft.ColorScheme.on_surface
 
-            dias = int(stats['siglas'][turno]['dias'])
+                    if stat == 'DiferenciaConvenio' or stat == 'DifConvenioAnioAnterior':
+                        
+                        if stats[stat].find( '-' ) >= 0:
+                            color_personalizado = ft.colors.RED
+                        else:
+                            color_personalizado = ft.colors.GREEN
 
-            self.BarGroupStatsBar.append( ft.BarChartGroup(
-                x=index,
-                bar_rods=[
-                    ft.BarChartRod(
-                        from_y=0,
-                        to_y=dias,
-                        width=25,
-                        color=stats['siglas'][turno]['color'],
-                        tooltip=f"{stats['siglas'][turno]['nombre']} - {dias} días",
-                        border_radius=0,
-                    ),
-                ],
-            ) )
-
-            self.BarLabelsStatsBar.append(
-                ft.ChartAxisLabel(
-                    value=index, label=ft.Container(
-                        ft.Text( 
-                            f"{turno}", 
-                        ),
-                        padding=10, 
-                        tooltip=f"{stats['siglas'][turno]['nombre']} - {dias} días" )
+                    self.ListadoEstadisticasColumn.controls.append(
+                        ft.Container( ft.Row(
+                                [
+                                    ft.Text( stat, weight='BOLD', expand=2, color= color_personalizado ),
+                                    ft.Text( stats[stat], weight='BOLD', expand=1, color= color_personalizado ),
+                                ],
+                                alignment= ft.alignment.center,
+                            ),
+                            on_click= lambda x, stat = stat: self.on_ItemListStats( stat )
+                        )
                     )
-                )
 
-            index += 1
+
+
+            index = 0
+            for turno in stats['siglas']:
+
+                dias = int(stats['siglas'][turno]['dias'])
+
+                self.BarGroupStatsBar.append( ft.BarChartGroup(
+                    x=index,
+                    bar_rods=[
+                        ft.BarChartRod(
+                            from_y=0,
+                            to_y=dias,
+                            width=25,
+                            color=stats['siglas'][turno]['color'],
+                            tooltip=f"{stats['siglas'][turno]['nombre']} - {dias} días",
+                            border_radius=0,
+                        ),
+                    ],
+                ) )
+
+                self.BarLabelsStatsBar.append(
+                    ft.ChartAxisLabel(
+                        value=index, label=ft.Container(
+                            ft.Text( 
+                                f"{turno}", 
+                            ),
+                            padding=10, 
+                            tooltip=f"{stats['siglas'][turno]['nombre']} - {dias} días" )
+                        )
+                    )
+
+                index += 1
 
         self.page.update()
         
