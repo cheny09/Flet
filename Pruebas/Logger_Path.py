@@ -16,7 +16,7 @@ logging.basicConfig(
         logging.FileHandler("out.log"),
         logging.StreamHandler()
     ]
-    )
+)
 Logger = logging.getLogger('planilla')
 
 PATH_HOME = ''

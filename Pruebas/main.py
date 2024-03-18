@@ -28,7 +28,7 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     #print( page.client_storage.get_keys('') )
-    page.client_storage.clear()
+    #page.client_storage.clear()
 
 
 

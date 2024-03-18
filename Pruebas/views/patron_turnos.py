@@ -182,7 +182,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
                 content= ft.Container( 
                     content= ft.Row(
                         [
-                            ft.FilledButton( text= 'Limpiar', icon= ft.icons.CLEANING_SERVICES, icon_color= ft.colors.RED, expand=1,
+                            ft.OutlinedButton( text= 'Limpiar', icon= ft.icons.CLEANING_SERVICES, icon_color= ft.colors.RED, expand=1,
                             on_click=lambda x: self.borrar_del_patron_de_turnos(),    
                             ),
                             ft.FilledButton( text= 'Crear', icon= ft.icons.SAVE, icon_color= ft.colors.GREEN, expand=1,

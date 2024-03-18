@@ -159,7 +159,7 @@ class App( funciones ):
                 center_title = False,
                 bgcolor = ft.colors.PRIMARY_CONTAINER,
                 actions = [
-                    ft.IconButton( ft.icons.DOCUMENT_SCANNER, on_click=lambda x: self.log_read()),
+                    #ft.IconButton( ft.icons.DOCUMENT_SCANNER, on_click=lambda x: self.log_read()),
                     ft.IconButton( ft.icons.QUESTION_MARK, scale = 1.25, tooltip = 'Mostrar Ayuda', on_click=lambda _: self.ayuda() ),
                     self.BtnPlanillaIrAHoy,
                 ],
@@ -224,10 +224,6 @@ class App( funciones ):
         
 
         actions = [
-            #ft.OutlinedButton(
-            #    text= 'Cancelar',
-            #    on_click= lambda _: self.fun_guardar_welcome( -1 )
-            #),
             ft.FilledButton(
                 text= 'Continuar',
                 on_click= lambda _: self.fun_guardar_welcome( 0 )
@@ -710,8 +706,16 @@ class App( funciones ):
         if Actions == False:
 
             Actions = [
-                #ft.TextButton("Yes", on_click=self.close_dlg),
-                ft.OutlinedButton("Cerrar", on_click=self.close_dlg),
+                ft.Container( 
+                    content= ft.IconButton( 
+                        ft.icons.DOCUMENT_SCANNER,
+                        icon_color= '#00000000', # OCULTA DE FORMA TRANSPARENTE EL BOTON
+                        on_click=lambda x: self.log_read()
+                    ),
+                    expand=1,
+                    alignment= ft.alignment.center_left
+                ),
+                ft.OutlinedButton("Cerrar", on_click=self.close_dlg ),
             ]
 
         if Content == False and text != '':
@@ -728,7 +732,7 @@ class App( funciones ):
             modal=modal, # Si el diálogo se puede descartar haciendo clic en el área de fuera de él.
             title= ft.Row( controls= Title, ),
             content= ft.Column( controls= Content, width = 480, spacing=10, alignment= ft.MainAxisAlignment.CENTER, tight=True, scroll=True ),
-            actions= Actions,
+            actions= [ft.Row( controls= Actions )],
             actions_alignment=ft.MainAxisAlignment.END,
             #on_dismiss=lambda e: print("Modal dialog dismissed!"),
             inset_padding= ft.padding.symmetric( vertical= margen_vertical, horizontal= margen_horizontal ),
@@ -865,7 +869,7 @@ class App( funciones ):
                 text = ["Para crear un patron lo primero es agregar los turnos en el orden deseado pulsando en elegir turno y luego en el simbolo __+__, recuerda indicar los días libres.",
                         "Si se a equivocado en un turno, pulsando sobre él se puede eliminar del patrón.",
                         "Una vez completado el ciclo, indica la fecha de inicio y de fin.",
-                        "Ahora pulsa sobre el boton de color verde ( __Crear__ ), si el patron se ha creado correctamente recibira un mensaje como:",
+                        "Ahora pulsa sobre el botón ( __Crear__ ), si el patron se ha creado correctamente recibira un mensaje como:",
                         "Se ha creado el patrón desde el",
                         f"['1', '2', '{datetime.now().year}'] al ['31', '12', '{datetime.now().year +1}']",
                         "Puede reiniciar el fromulario pulsando sobre el botón __Limpiar__."]
