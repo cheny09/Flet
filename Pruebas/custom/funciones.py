@@ -39,6 +39,28 @@ def color_rgb_aply_opacity( color, opacity ):
         Logger.error( f"color_rgb_aply_opacity Unexpected {err=}, {type( err )=}" )
 
 
+
+def str_to_list_fecha( fecha ):
+
+    fecha = str( fecha )
+
+    if fecha.find( '-' )>=0:
+    
+        fecha = fecha.split( "-" )
+        
+        if len( fecha ) == 3:
+            for i in range( len( fecha ) ):
+                
+                if not fecha[i].isdigit():
+
+                    return False
+                else:
+                    fecha[i] = int(fecha[i])
+
+        return fecha
+
+
+
 class funciones():    
 
 

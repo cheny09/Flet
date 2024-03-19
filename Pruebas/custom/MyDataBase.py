@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import os
 
 from Logger_Path import Path, Logger
-from custom.funciones import funciones, storage
+from custom.funciones import funciones, storage, str_to_list_fecha
 from config_default import TurnosDefaults
 
 
@@ -527,31 +527,28 @@ class ddbb( funciones ):
 
         mostrar = {}
 
-        for anio in range( RangoFechas[0][2], RangoFechas[1][2] + 1 ):
 
-            print( "range" , anio )
+        if str( anio ) in self.DataYears:
 
-            if str( anio ) in self.DataYears:
+            for meses in self.DataYears[str( anio )]:
 
-                for meses in self.DataYears[str( anio )]:
+                if anual == False and str( meses ) == str( mes ) or anual == True:
 
-                    if anual == False and str( meses ) == str( mes ) or anual == True:
+                    if 'DiferenciaConvenio' != meses and 'horas_convenio' != meses:
 
-                        if 'DiferenciaConvenio' != meses and 'horas_convenio' != meses:
+                        for dias in self.DataYears[str( anio )][str( meses )]:
 
-                            for dias in self.DataYears[str( anio )][str( meses )]:
+                            mostrar = self.detalle_dia_ddbb( dias, meses, anio, self.UserConfiguration['ID'] )
+                            
+                            id_turno = mostrar['turno']
+                            mostrar['computo'] = self.UserConfiguration['turnos'][str( id_turno )]['computo']
+                            mostrar['siglas'] = self.UserConfiguration['turnos'][str( id_turno )]['siglas']
+                            mostrar['nombre'] = self.UserConfiguration['turnos'][str( id_turno )]['nombre']
+                            mostrar['color'] = self.UserConfiguration['turnos'][str( id_turno )]['color']
+                            mostrar['nocturno'] = self.UserConfiguration['turnos'][str( id_turno )]['nocturno']
 
-                                mostrar = self.detalle_dia_ddbb( dias, meses, anio, self.UserConfiguration['ID'] )
-                                
-                                id_turno = mostrar['turno']
-                                mostrar['computo'] = self.UserConfiguration['turnos'][str( id_turno )]['computo']
-                                mostrar['siglas'] = self.UserConfiguration['turnos'][str( id_turno )]['siglas']
-                                mostrar['nombre'] = self.UserConfiguration['turnos'][str( id_turno )]['nombre']
-                                mostrar['color'] = self.UserConfiguration['turnos'][str( id_turno )]['color']
-                                mostrar['nocturno'] = self.UserConfiguration['turnos'][str( id_turno )]['nocturno']
-
-                                Array = self.sumar_stadisticas( mostrar, anual, horasConvenio, Array, SumarConvenio )
-                                SumarConvenio = False
+                            Array = self.sumar_stadisticas( mostrar, anual, horasConvenio, Array, SumarConvenio )
+                            SumarConvenio = False
 
             
         if ( anual == True ):
@@ -690,6 +687,161 @@ class ddbb( funciones ):
 
 
         return Array
+    
+
+
+
+
+    def estadisticas_ddbb_v2( self, anio = None, mes = None, RangoFechas = None ):
+        
+        if anio != None or mes != None or RangoFechas != None:
+
+            if RangoFechas:
+                Logger.debug( f"Buscando estadisticas para el {str( RangoFechas )}" )
+
+
+            elif anio != None and mes == None:
+                Logger.debug( f"Buscando estadisticas para el {str( anio )}" )
+                RangoFechas = [ [ 1, 1, int(anio) ], [ 1, 1, int(anio)+1 ] ]
+
+            elif anio != None and mes != None:
+                Logger.debug( f"Buscando estadisticas para el {str( mes )} del {str( anio )}" )
+                RangoFechas = [ [ 1, int(mes), int(anio) ], [ 1, int(mes)+1, int(anio) ] ]
+
+
+
+            inicio = datetime(RangoFechas[0][2], RangoFechas[0][1], RangoFechas[0][0])
+            fin    = datetime(RangoFechas[1][2], RangoFechas[1][1], RangoFechas[1][0])
+
+            lista_rango_fechas = [(inicio + timedelta(days=d)).strftime("%Y-%m-%d")
+                    for d in range((fin - inicio).days + 1)] 
+            
+            Logger.debug( f"Listado de fechas: {str( lista_rango_fechas )}" )
+
+
+
+            IDuser = self.UserConfiguration['ID']
+
+
+            if str( anio ) in self.DataYears:
+
+                if 'horas_convenio' in self.DataYears[str( anio )]:
+                    
+                    horasConvenio = self.DataYears[str( anio )]['horas_convenio']
+                else:
+
+                    horasConvenio = self.UserConfiguration['horas_convenio']
+
+            else:
+
+                horasConvenio = self.UserConfiguration['horas_convenio']
+
+
+
+            if ( anio != None and mes != None ):
+                
+                anual = False
+
+            elif anio != None:
+
+                mes = ''
+                anual = True
+            else:
+
+                anual = None
+
+
+            Array = {}
+
+            if ( anual == True ):
+
+                Array['Convenio'] = self.format_hora_hh_mm_ss( f"{horasConvenio}" )
+                Array['Computo'] = "0:0"
+                Array['DifConvenioAnioAnterior'] = "0:0"
+                Array['DiferenciaConvenio']="0"
+                Array['TotalHorasNocturnas'] = "0:0"
+                SumarConvenio = True
+            else:
+
+                Array['Computo'] = "0:0"
+                Array['TotalHorasNocturnas'] = "0:0"
+                SumarConvenio = False
+            
+            Array['siglas'] = {}
+            
+
+            mostrar = {}
+
+            for fecha in lista_rango_fechas:
+                
+                fecha = str_to_list_fecha( fecha )
+
+                if not fecha:
+
+                    return self.show_alert_dialog( text= f"Formato de fecha incorrecto, debe ser: dd-mm-yyyy.", title=f"Error en fecha" )
+
+                anio_ = fecha[0]
+                mes_ = fecha[1]
+                dia = fecha[2]
+
+                Logger.debug( f"Fecha: {anio_}, Mes: {mes_} Dia: {dia}" )
+
+                if str( anio_ ) in self.DataYears:
+
+                    Logger.debug( f" Mostrando el año {anio_}" )
+
+                    if str(mes_) in self.DataYears[str( anio_ )]:
+
+                        if anual == False and str( mes_ ) == str( mes ) or anual == True or anual == None:
+
+                            Logger.debug( f" Mostrando el mes {mes_}" )
+
+                            if str(dia) in self.DataYears[str( anio_ )][str( mes_ )]:
+
+                                Logger.debug( f" Mostrando el dia {dia}" )
+
+                                mostrar = self.detalle_dia_ddbb( dia, mes_, anio_, self.UserConfiguration['ID'] )
+                                
+                                id_turno = mostrar['turno']
+                                mostrar['computo'] = self.UserConfiguration['turnos'][str( id_turno )]['computo']
+                                mostrar['siglas'] = self.UserConfiguration['turnos'][str( id_turno )]['siglas']
+                                mostrar['nombre'] = self.UserConfiguration['turnos'][str( id_turno )]['nombre']
+                                mostrar['color'] = self.UserConfiguration['turnos'][str( id_turno )]['color']
+                                mostrar['nocturno'] = self.UserConfiguration['turnos'][str( id_turno )]['nocturno']
+
+                                Array = self.sumar_stadisticas( mostrar, anual, horasConvenio, Array, SumarConvenio )
+                                SumarConvenio = False
+
+                
+            if ( anual == True ):
+
+                Array['DiferenciaConvenio'] = self.sumar_horas( Array['DiferenciaConvenio'], Array['Computo'] )
+                
+                next_year = str( int( anio ) + 1 )
+                
+                if not next_year in self.DataYears:
+
+                    self.DataYears[next_year] = {}
+
+                if not 'DiferenciaConvenio' in self.DataYears[next_year] or self.DataYears[( next_year )]['DiferenciaConvenio']  !=  Array['DiferenciaConvenio']:
+
+                    self.DataYears[( next_year )]['DiferenciaConvenio']  =  Array['DiferenciaConvenio']
+
+                    #self.conf_json( self.YEARS_DB, 'w', self.DataYears )
+
+
+                if str( anio ) in self.DataYears:
+
+                    if not 'horas_convenio' in self.DataYears[str( anio )]:
+
+                        self.DataYears[str( anio )]['horas_convenio']  =  Array['Convenio']
+
+                        #self.conf_json( self.YEARS_DB, 'w', self.DataYears )
+
+                
+            return Array 
+
+
     
 
 

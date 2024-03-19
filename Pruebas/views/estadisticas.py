@@ -7,9 +7,10 @@ from custom.funciones import (
     color_rgb_aply_opacity, 
     rgb2hex, 
     hex2rgb,
+    str_to_list_fecha,
     ReturnValueThread,
     funciones,
-    storage
+    storage,
 )
 from custom.MyDataBase import ddbb
 from custom.datepicker import DatePicker
@@ -188,6 +189,11 @@ class PageEstadisticas( App, ft.View, ddbb ):
                 return self.show_alert_dialog( text= f"Primero debe seleccionar la fecha de inicio.", title=f"Error en fecha" )
             
             inicio = str_to_list_fecha( fecha_inicio.value )
+
+            if not inicio:
+
+                return self.show_alert_dialog( text= f"Formato de fecha incorrecto, debe ser: dd-mm-yyyy.", title=f"Error en fecha" )
+            
             date_picker2.first_date = datetime(inicio[2], inicio[1], inicio[0])
             date_picker2.pick_date( x )
 
@@ -205,24 +211,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
         )
 
 
-        def str_to_list_fecha( fecha ):
-
-            fecha = str( fecha )
-
-            if fecha.find( '-' )>=0:
-            
-                fecha = fecha.split( "-" )
-                
-                if len( fecha ) == 3:
-                    for i in range( len( fecha ) ):
-                        
-                        if not fecha[i].isdigit():
-
-                            return self.show_alert_dialog( text= f"Formato incorreto.", title=f"Error en fecha" )
-                        else:
-                            fecha[i] = int(fecha[i])
-
-                return fecha
+        
 
 
 
@@ -231,6 +220,11 @@ class PageEstadisticas( App, ft.View, ddbb ):
             inicio = str_to_list_fecha( fecha_inicio.value )
 
             fin = str_to_list_fecha( fecha_fin.value )
+
+            if not inicio or not fin:
+
+                return self.show_alert_dialog( text= f"Formato de fecha incorrecto, debe ser: dd-mm-yyyy.", title=f"Error en fecha" )
+     
 
 
             self.rango_fechas_personalizado = [
@@ -298,15 +292,15 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
         if personalizado != None:
 
-            stats = self.estadisticas_ddbb( RangoFechas = personalizado )
+            stats = self.estadisticas_ddbb_v2( RangoFechas = personalizado )
 
         elif mes != '0':
 
-            stats = self.estadisticas_ddbb( anio, mes )
+            stats = self.estadisticas_ddbb_v2( anio, mes )
 
         else:
 
-            stats = self.estadisticas_ddbb( anio )
+            stats = self.estadisticas_ddbb_v2( anio )
 
         #print(stats['siglas'])
 
