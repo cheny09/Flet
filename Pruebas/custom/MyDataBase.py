@@ -454,14 +454,29 @@ class ddbb( funciones ):
         
 
 
-    def estadisticas_ddbb( self, anio, mes = None ):
+    def estadisticas_ddbb( self, anio = None, mes = None, RangoFechas = None ):
+        
+        if RangoFechas:
+            Logger.debug( f"Buscando estadisticas para el {str( RangoFechas )}" )
 
-        if mes == None:
+            inicio = datetime(RangoFechas[0][2], RangoFechas[0][1], RangoFechas[0][0])
+            fin    = datetime(RangoFechas[1][2], RangoFechas[1][1], RangoFechas[1][0])
+
+            lista_rango_fechas = [(inicio + timedelta(days=d)).strftime("%Y-%m-%d")
+                    for d in range((fin - inicio).days + 1)] 
+            
+            print(lista_rango_fechas)
+
+        elif mes == None:
             Logger.debug( f"Buscando estadisticas para el {str( anio )}" )
+            RangoFechas = [ [ 1, 1, int(anio) ], [ 1, 1, int(anio) ] ]
+
         else:
             Logger.debug( f"Buscando estadisticas para el {str( mes )} del {str( anio )}" )
-        
+            RangoFechas = [ [ 1, mes, int(anio) ], [ 1, mes, int(anio) ] ]
+
         IDuser = self.UserConfiguration['ID']
+
 
         if str( anio ) in self.DataYears:
 
@@ -476,13 +491,20 @@ class ddbb( funciones ):
 
             horasConvenio = self.UserConfiguration['horas_convenio']
 
-        if ( mes != None ):
-            if self.MODO_DB: #MODO DB True
-                mes = f"AND mes = '{mes}'"
+
+
+        if ( anio != None and mes != None ):
+            
             anual = False
-        else:
+
+        elif anio != None:
+
             mes = ''
             anual = True
+        else:
+
+            anual = None
+
 
         Array = {}
 
@@ -505,27 +527,31 @@ class ddbb( funciones ):
 
         mostrar = {}
 
-        if str( anio ) in self.DataYears:
+        for anio in range( RangoFechas[0][2], RangoFechas[1][2] + 1 ):
 
-            for meses in self.DataYears[str( anio )]:
+            print( "range" , anio )
 
-                if anual == False and str( meses ) == str( mes ) or anual == True:
+            if str( anio ) in self.DataYears:
 
-                    if 'DiferenciaConvenio' != meses and 'horas_convenio' != meses:
+                for meses in self.DataYears[str( anio )]:
 
-                        for dias in self.DataYears[str( anio )][str( meses )]:
+                    if anual == False and str( meses ) == str( mes ) or anual == True:
 
-                            mostrar = self.detalle_dia_ddbb( dias, meses, anio, self.UserConfiguration['ID'] )
-                            
-                            id_turno = mostrar['turno']
-                            mostrar['computo'] = self.UserConfiguration['turnos'][str( id_turno )]['computo']
-                            mostrar['siglas'] = self.UserConfiguration['turnos'][str( id_turno )]['siglas']
-                            mostrar['nombre'] = self.UserConfiguration['turnos'][str( id_turno )]['nombre']
-                            mostrar['color'] = self.UserConfiguration['turnos'][str( id_turno )]['color']
-                            mostrar['nocturno'] = self.UserConfiguration['turnos'][str( id_turno )]['nocturno']
+                        if 'DiferenciaConvenio' != meses and 'horas_convenio' != meses:
 
-                            Array = self.sumar_stadisticas( mostrar, anual, horasConvenio, Array, SumarConvenio )
-                            SumarConvenio = False
+                            for dias in self.DataYears[str( anio )][str( meses )]:
+
+                                mostrar = self.detalle_dia_ddbb( dias, meses, anio, self.UserConfiguration['ID'] )
+                                
+                                id_turno = mostrar['turno']
+                                mostrar['computo'] = self.UserConfiguration['turnos'][str( id_turno )]['computo']
+                                mostrar['siglas'] = self.UserConfiguration['turnos'][str( id_turno )]['siglas']
+                                mostrar['nombre'] = self.UserConfiguration['turnos'][str( id_turno )]['nombre']
+                                mostrar['color'] = self.UserConfiguration['turnos'][str( id_turno )]['color']
+                                mostrar['nocturno'] = self.UserConfiguration['turnos'][str( id_turno )]['nocturno']
+
+                                Array = self.sumar_stadisticas( mostrar, anual, horasConvenio, Array, SumarConvenio )
+                                SumarConvenio = False
 
             
         if ( anual == True ):

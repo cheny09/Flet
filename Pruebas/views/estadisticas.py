@@ -153,7 +153,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
             page= self.page,
             #on_change=change_date,
             #on_dismiss=date_picker_dismissed,
-            first_date=datetime(RangeYears[0], 1, 1),
+            first_date=datetime(RangeYears[0], 2, 1),
             last_date=datetime(RangeYears[1], 12, 31),
         )
 
@@ -173,8 +173,28 @@ class PageEstadisticas( App, ft.View, ddbb ):
         )
 
 
+
+        def limitar_fecha_fin_desde_inicio( x ):
+
+            date_picker2 = DatePicker(
+                page= self.page,
+                #on_change=change_date,
+                #on_dismiss=date_picker_dismissed,
+                first_date=datetime(RangeYears[0], 2, 1),
+                last_date=datetime(RangeYears[1], 12, 31),
+            )
+            if fecha_inicio.value == '':
+
+                return self.show_alert_dialog( text= f"Primero debe seleccionar la fecha de inicio.", title=f"Error en fecha" )
+            
+            inicio = str_to_list_fecha( fecha_inicio.value )
+            date_picker2.first_date = datetime(inicio[2], inicio[1], inicio[0])
+            date_picker2.pick_date( x )
+
+
+
         fecha_fin = ft.TextField( value='', label='Fecha de fin', expand=1, )
-        fin = ft.IconButton( icon=ft.icons.CALENDAR_MONTH, on_click= lambda _, x = fecha_fin: date_picker.pick_date( x ), )
+        fin = ft.IconButton( icon=ft.icons.CALENDAR_MONTH, on_click= lambda _, x = fecha_fin: limitar_fecha_fin_desde_inicio( x ), )
         content.append(
             ft.Row(
                 controls=[
@@ -185,12 +205,40 @@ class PageEstadisticas( App, ft.View, ddbb ):
         )
 
 
+        def str_to_list_fecha( fecha ):
+
+            fecha = str( fecha )
+
+            if fecha.find( '-' )>=0:
+            
+                fecha = fecha.split( "-" )
+                
+                if len( fecha ) == 3:
+                    for i in range( len( fecha ) ):
+                        
+                        if not fecha[i].isdigit():
+
+                            return self.show_alert_dialog( text= f"Formato incorreto.", title=f"Error en fecha" )
+                        else:
+                            fecha[i] = int(fecha[i])
+
+                return fecha
+
+
+
         def mostrar():
 
+            inicio = str_to_list_fecha( fecha_inicio.value )
+
+            fin = str_to_list_fecha( fecha_fin.value )
+
+
             self.rango_fechas_personalizado = [
-                fecha_inicio.value,
-                fecha_fin.value
+                inicio,
+                fin
             ]
+
+            Logger.debug( f"Rango de fechas a buscar: {self.rango_fechas_personalizado}" )
             
             self.stats( False )
 
@@ -206,7 +254,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
 
         self.page.banner = ft.Banner(
-            bgcolor=ft.colors.AMBER_100,
+            bgcolor=ft.colors.AMBER_50,
             #leading=ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=40),
             content= ft.Column( controls= content, spacing=10, alignment= ft.MainAxisAlignment.CENTER, ),
             actions= actions,
@@ -250,7 +298,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
         if personalizado != None:
 
-            stats = None
+            stats = self.estadisticas_ddbb( RangoFechas = personalizado )
 
         elif mes != '0':
 

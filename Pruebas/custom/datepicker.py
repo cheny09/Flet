@@ -38,6 +38,7 @@ class DatePicker():
         self.first_date = first_date
         self.last_date = last_date
 
+
         self.Actions = [ 
 
             ft.Container( 
@@ -77,6 +78,8 @@ class DatePicker():
 
         self.retorno = x
 
+        print( self.first_date, self.last_date )
+
         self.date_picker_load()
 
         self.date_picker.open = True
@@ -95,6 +98,9 @@ class DatePicker():
 
         ContenedorPrincipal = ft.Column( spacing = 10, width = 480, tight=True, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
+        self.notify_text = ft.Text(f"", bgcolor= ft.colors.RED, )
+        ContenedorPrincipal.controls.append( self.notify_text )
+        
         Menudate_picker = ft.Column( height=60, alignment= ft.MainAxisAlignment.CENTER )
         ContenedorPrincipal.controls.append( Menudate_picker )
 
@@ -244,11 +250,23 @@ class DatePicker():
 
         if self.retorno:
             
-            Logger.debug( f"DatePicker RETORNO" )
+            DTselect = datetime(int(anio), int(mes), int(dia))
 
-            self.retorno.value = f"{dia}-{mes}-{anio}"
+            if self.first_date < DTselect and self.last_date > DTselect:
 
-            self.close_date(None)
+                Logger.debug( f"DatePicker RETORNAR fecha seleccionada" )
+
+                self.retorno.value = f"{dia}-{mes}-{anio}"
+
+                self.close_date(None)
+            
+            else:
+
+                Logger.debug( f"DatePicker No Puede RETORNAR fecha seleccionada" )
+                
+                self.notify_text.value = f"La fecha seleccionada no esta permitida."
+                self.page.update()
+
 
 
 
@@ -277,7 +295,7 @@ class DatePicker():
 
 
         self.btn_day_date_picker[ i ].text = dia
-        self.btn_day_date_picker[ i ].style.bgcolor = color_day_final
+        self.btn_day_date_picker[ i ].style.bgcolor = ft.colors.with_opacity( opacity, color_day_final)
         self.btn_day_date_picker[ i ].style.color = color_text_dia
 
         self.btn_day_date_picker[ i ].data = { 'day': dia, 'month': mes, 'year': year }
@@ -329,6 +347,7 @@ class DatePicker():
                     color_text_dia = False #[0, 0, 0, 1]
 
                     
+
                     if dia_ != 0:  
 
                         self.btn_day_date_picker[ index ].text = dia_
@@ -348,7 +367,16 @@ class DatePicker():
                         color_day = '#000000'
                         color_text_dia = '#ffffff'
 
+                    
+
+                    
+
                     if dia_ != 0:
+
+                        DTselect = datetime(int(year), int(month), int(dia_))
+                        if self.first_date > DTselect or self.last_date < DTselect:
+
+                            opacity = 0.3
 
                         self.actualizar_dia( 
 

@@ -14,6 +14,7 @@ from custom.funciones import (
 from custom.MyDataBase import ddbb
 from custom.GoogleCalendar import MyGoogleCalendar
 from custom.GoogleCalendarSetup import get_token_google
+from custom.datepicker import DatePicker
 
 from datetime import datetime, timedelta
 
@@ -134,6 +135,19 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
         CardConfigPatronTurnos.controls.append( RowFechasInicioFinPatronTurnos )
 
+
+        RangeYears = self.range_anios_en_ddbb()
+
+        date_picker = DatePicker(
+            page= self.page,
+            #on_change=change_date,
+            #on_dismiss=date_picker_dismissed,
+            first_date=datetime(RangeYears[0], 2, 1),
+            last_date=datetime(RangeYears[1], 12, 31),
+        )
+
+
+
         self.FechaInicioPatronTurnos = ft.TextField(
             value='',
             label="Fecha de inicio", 
@@ -141,10 +155,13 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             tooltip = 'Introduce aquí la fecha de inicio para el patron de turnos.',
             multiline=False,
             )
+        self.FechaInicioPatronTurnos.on_focus= lambda _, x = self.FechaInicioPatronTurnos: date_picker.pick_date( x )
+        
         RowFechasInicioFinPatronTurnos.controls.append( ft.Container(
             content= self.FechaInicioPatronTurnos,
             expand=1
         ) )
+        
 
         self.FechaFinPatronTurnos = ft.TextField(
             value='',
@@ -152,8 +169,9 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             hint_text="D-M-YYYY",
             tooltip = 'Introduce aquí la fecha de fin para el patron de turnos.',
             multiline=False,
+            
             )
-        
+        self.FechaFinPatronTurnos.on_focus= lambda _, x = self.FechaFinPatronTurnos: date_picker.pick_date( x )
         RowFechasInicioFinPatronTurnos.controls.append( ft.Container(
             content= self.FechaFinPatronTurnos,
             expand=1

@@ -44,6 +44,10 @@ class App( funciones ):
         super().__init__()
 
         self.page = page
+
+        if self.page.banner:
+            self.page.banner.open = False
+
         #self.page.platform = ft.PagePlatform.ANDROID
         Logger.debug( f"Platform, {self.page.platform}")
 

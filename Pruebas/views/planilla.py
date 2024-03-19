@@ -317,15 +317,15 @@ class PagePlanilla( App, ft.View, ddbb ):
 
 
         self.btn_day_planilla[ i ].text = titulo_dia
-        self.btn_day_planilla[ i ].style.bgcolor = color_day_final
+        self.btn_day_planilla[ i ].style.bgcolor = ft.colors.with_opacity( opacity, color_day_final)
         self.btn_day_planilla[ i ].style.color = color_text_dia
 
         self.btn_day_Turno[ i ].text = turno
-        self.btn_day_Turno[ i ].style.bgcolor = color_turno
+        self.btn_day_Turno[ i ].style.bgcolor = ft.colors.with_opacity( opacity, color_turno)
         self.btn_day_Turno[ i ].expand = 1
 
         self.btn_day_TurnoExtra[ i ].text = turno_extra
-        self.btn_day_TurnoExtra[ i ].style.bgcolor = color_turno_extra
+        self.btn_day_TurnoExtra[ i ].style.bgcolor = ft.colors.with_opacity( opacity, color_turno_extra)
         self.btn_day_TurnoExtra[ i ].expand = 1
 
         if turno_extra == '':
@@ -454,7 +454,7 @@ class PagePlanilla( App, ft.View, ddbb ):
                                 #print( dia_ant[0] )
                                 month = fecha_mes_siguiente.month
                                 year = fecha_mes_siguiente.year
-                                opacity = 0.55
+                                opacity = 0.3
 
                     self.btn_day_planilla[ index ].text = dia_
                     self.btn_day_Turno[ index ].text = ''
