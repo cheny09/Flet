@@ -252,7 +252,7 @@ class DatePicker():
             
             DTselect = datetime(int(anio), int(mes), int(dia))
 
-            if self.first_date < DTselect and self.last_date > DTselect:
+            if self.first_date <= DTselect and self.last_date >= DTselect:
 
                 Logger.debug( f"DatePicker RETORNAR fecha seleccionada" )
 

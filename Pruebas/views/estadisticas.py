@@ -153,7 +153,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
             page= self.page,
             #on_change=change_date,
             #on_dismiss=date_picker_dismissed,
-            first_date=datetime(RangeYears[0], 2, 1),
+            first_date=datetime(RangeYears[0], 1, 1),
             last_date=datetime(RangeYears[1], 12, 31),
         )
 
@@ -180,7 +180,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
                 page= self.page,
                 #on_change=change_date,
                 #on_dismiss=date_picker_dismissed,
-                first_date=datetime(RangeYears[0], 2, 1),
+                first_date=datetime(RangeYears[0], 1, 1),
                 last_date=datetime(RangeYears[1], 12, 31),
             )
             if fecha_inicio.value == '':
