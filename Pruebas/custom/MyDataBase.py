@@ -782,9 +782,9 @@ class ddbb( funciones ):
 
                 anio_ = fecha[0]
                 mes_ = fecha[1]
-                dia = fecha[2]
+                dia_ = fecha[2]
 
-                Logger.debug( f"Fecha: {anio_}, Mes: {mes_} Dia: {dia}" )
+                #Logger.debug( f"Fecha: {anio_}, Mes: {mes_} Dia: {dia}" )
 
                 if str( anio_ ) in self.DataYears:
 
@@ -796,11 +796,11 @@ class ddbb( funciones ):
 
                             Logger.debug( f" Mostrando el mes {mes_}" )
 
-                            if str(dia) in self.DataYears[str( anio_ )][str( mes_ )]:
+                            if str(dia_) in self.DataYears[str( anio_ )][str( mes_ )]:
 
-                                Logger.debug( f" Mostrando el dia {dia}" )
+                                Logger.debug( f" Mostrando el dia {dia_}" )
 
-                                mostrar = self.detalle_dia_ddbb( dia, mes_, anio_, self.UserConfiguration['ID'] )
+                                mostrar = self.detalle_dia_ddbb( dia_, mes_, anio_, self.UserConfiguration['ID'] )
                                 
                                 id_turno = mostrar['turno']
                                 mostrar['computo'] = self.UserConfiguration['turnos'][str( id_turno )]['computo']

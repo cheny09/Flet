@@ -92,8 +92,14 @@ class PageEstadisticas( App, ft.View, ddbb ):
             ],
         ) )
         
-        ContenedorPrincipalPageEstadisticas.controls.append( ft.Container( height=10 ) )
+
+        
         #self.ListadoEstadisticasColumn = ft.Column( height=200, spacing = 10, )
+
+        self.mostrando_del_al = ft.Text( "", size=14, )
+
+        ContenedorPrincipalPageEstadisticas.controls.append( ft.Container( content=self.mostrando_del_al, height=30, alignment= ft.alignment.center ) )
+
 
         ContenedorPrincipalPageEstadisticas.controls.append( self.ListadoEstadisticasColumn )
         
@@ -149,18 +155,21 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
         content = []
             
-        
-        date_picker = DatePicker(
-            page= self.page,
-            #on_change=change_date,
-            #on_dismiss=date_picker_dismissed,
-            first_date=datetime(RangeYears[0], 1, 1),
-            last_date=datetime(RangeYears[1], 12, 31),
-        )
+        def seleccionar_fecha_inicio(x):
+
+            date_picker = DatePicker(
+                page= self.page,
+                #on_change=change_date,
+                #on_dismiss=date_picker_dismissed,
+                first_date=datetime(RangeYears[0], 1, 1),
+                last_date=datetime(RangeYears[1], 12, 31),
+            )
+
+            date_picker.pick_date( x )
 
         fecha_inicio = ft.TextField( value='', label='Fecha de inicio', expand=1, )
 
-        inicio = ft.IconButton( icon=ft.icons.CALENDAR_MONTH, on_click= lambda _, x = fecha_inicio: date_picker.pick_date( x ),  ) # 
+        inicio = ft.IconButton( icon=ft.icons.CALENDAR_MONTH, on_click= lambda _, x = fecha_inicio: seleccionar_fecha_inicio( x ),  ) # 
 
 
         
@@ -285,6 +294,8 @@ class PageEstadisticas( App, ft.View, ddbb ):
         self.AñoSeleccionada = anio
         self.MesSeleccionada = mes
 
+        self.mostrando_del_al.value = ""
+
         if recarga:
             self.rango_fechas_personalizado = None
 
@@ -294,13 +305,19 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
             stats = self.estadisticas_ddbb_v2( RangoFechas = personalizado )
 
+            self.mostrando_del_al.value = f"Mostrando del {personalizado}"
+
         elif mes != '0':
 
             stats = self.estadisticas_ddbb_v2( anio, mes )
 
+            self.mostrando_del_al.value = f"Mostrando el mes {mes} del {anio}"
+
         else:
 
             stats = self.estadisticas_ddbb_v2( anio )
+
+            self.mostrando_del_al.value = f"Mostrando el año: {anio}"
 
         #print(stats['siglas'])
 
