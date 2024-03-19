@@ -78,7 +78,7 @@ class DatePicker():
 
         self.retorno = x
 
-        print( self.first_date, self.last_date )
+        Logger.debug( f"{self.first_date} {self.last_date}" )
 
         self.date_picker_load()
 
@@ -252,7 +252,18 @@ class DatePicker():
             
             DTselect = datetime(int(anio), int(mes), int(dia))
 
-            if self.first_date <= DTselect and self.last_date >= DTselect:
+            retorno = True
+
+            if self.first_date != None and self.last_date != None:
+                
+                if self.first_date <= DTselect and self.last_date >= DTselect:
+                    retorno = True
+                
+                else:
+                    retorno = False
+
+
+            if retorno:
 
                 Logger.debug( f"DatePicker RETORNAR fecha seleccionada" )
 
@@ -374,9 +385,12 @@ class DatePicker():
                     if dia_ != 0:
 
                         DTselect = datetime(int(year), int(month), int(dia_))
-                        if self.first_date > DTselect or self.last_date < DTselect:
 
-                            opacity = 0.3
+                        if self.first_date != None and self.last_date != None:
+
+                            if self.first_date > DTselect or self.last_date < DTselect:
+
+                                opacity = 0.3
 
                         self.actualizar_dia( 
 
