@@ -46,6 +46,9 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
         self.view_stats()
 
+
+
+
     def view_stats( self ):
 
         ContenedorPrincipalPageEstadisticas = ft.Column( expand=1, width = 480, spacing = 10, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
@@ -193,6 +196,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
                 first_date=datetime(RangeYears[0], 1, 1),
                 last_date=datetime(RangeYears[1], 12, 31),
             )
+
             if fecha_inicio.value == '':
 
                 return self.show_alert_dialog( text= f"Primero debe seleccionar la fecha de inicio.", title=f"Error en fecha" )
@@ -254,10 +258,8 @@ class PageEstadisticas( App, ft.View, ddbb ):
             ft.FilledButton( 'Mostrar', on_click= lambda x: mostrar()  ),    
         ]
 
-
-
         self.page.banner = ft.Banner(
-            bgcolor=ft.colors.AMBER_50,
+            bgcolor=ft.colors.SECONDARY_CONTAINER,
             #leading=ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=40),
             content= ft.Column( controls= content, spacing=10, alignment= ft.MainAxisAlignment.CENTER, ),
             actions= actions,

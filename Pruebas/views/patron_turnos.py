@@ -131,9 +131,15 @@ class PagePatronTurnos( App, ft.View, ddbb ):
         ) )
 
 
-        RowFechasInicioFinPatronTurnos = ft.Row()
+        RowFechasInicioPatronTurnos = ft.Row()
 
-        CardConfigPatronTurnos.controls.append( RowFechasInicioFinPatronTurnos )
+        CardConfigPatronTurnos.controls.append( RowFechasInicioPatronTurnos )
+
+        
+        RowFechaFinPatronTurnos = ft.Row()
+
+        CardConfigPatronTurnos.controls.append( RowFechaFinPatronTurnos )
+
 
 
         RangeYears = self.range_anios_en_ddbb()
@@ -154,11 +160,17 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             hint_text="D-M-YYYY",
             tooltip = 'Introduce aquí la fecha de inicio para el patron de turnos.',
             multiline=False,
+            expand=1,
+            content_padding=5,
+            text_align= ft.TextAlign.CENTER,
             )
-        self.FechaInicioPatronTurnos.on_focus= lambda _, x = self.FechaInicioPatronTurnos: date_picker.pick_date( x )
+        #self.FechaInicioPatronTurnos.on_focus= lambda _, x = self.FechaInicioPatronTurnos: date_picker.pick_date( x )
         
-        RowFechasInicioFinPatronTurnos.controls.append( ft.Container(
-            content= self.FechaInicioPatronTurnos,
+        RowFechasInicioPatronTurnos.controls.append( ft.Row(
+            controls= [
+                ft.IconButton( icon=ft.icons.TODAY, on_click= lambda _, x = self.FechaInicioPatronTurnos: date_picker.pick_date( x ) ),
+                self.FechaInicioPatronTurnos,
+            ],
             expand=1
         ) )
         
@@ -169,11 +181,16 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             hint_text="D-M-YYYY",
             tooltip = 'Introduce aquí la fecha de fin para el patron de turnos.',
             multiline=False,
-            
+            expand=1,
+            content_padding=5,
+            text_align= ft.TextAlign.CENTER,
             )
-        self.FechaFinPatronTurnos.on_focus= lambda _, x = self.FechaFinPatronTurnos: date_picker.pick_date( x )
-        RowFechasInicioFinPatronTurnos.controls.append( ft.Container(
-            content= self.FechaFinPatronTurnos,
+        
+        RowFechaFinPatronTurnos.controls.append( ft.Row(
+            controls= [
+                ft.IconButton( icon=ft.icons.TODAY, on_click= lambda _, x = self.FechaFinPatronTurnos: date_picker.pick_date( x ) ),
+                self.FechaFinPatronTurnos,
+            ],
             expand=1
         ) )
 

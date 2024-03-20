@@ -10,7 +10,7 @@ logging.getLogger("flet_runtime").setLevel(logging.WARNING)
 logging.getLogger("flet.fastapi").setLevel(logging.WARNING)
 
 logging.basicConfig( 
-    level=logging.DEBUG, 
+    level=logging.INFO, 
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
     datefmt='%m/%d/%Y %H:%M:%S',
     handlers=[
@@ -19,6 +19,8 @@ logging.basicConfig(
     ]
 )
 Logger = logging.getLogger('planilla')
+
+
 
 PATH_HOME = ''
 
@@ -39,8 +41,6 @@ PATH = ''
 
 
 def main(page: ft.Page):
-
-    page.platform
 
     if page.platform == ft.PagePlatform.ANDROID:
 
