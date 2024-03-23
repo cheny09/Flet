@@ -19,8 +19,19 @@ def main(page: ft.Page):
     page.session.clear()
 
     page.title = "Planilla"
-    page.theme = ft.Theme(color_scheme_seed="teal")
+    theme = ft.Theme(color_scheme_seed="teal")
+
+    theme.page_transitions.android = ft.PageTransitionTheme.ZOOM
+    theme.page_transitions.ios = ft.PageTransitionTheme.CUPERTINO
+    theme.page_transitions.macos = ft.PageTransitionTheme.FADE_UPWARDS
+    theme.page_transitions.linux = ft.PageTransitionTheme.ZOOM
+    theme.page_transitions.windows = ft.PageTransitionTheme.ZOOM
+    
+    
+    page.theme = theme
+
     page.theme_mode = ft.ThemeMode.SYSTEM # Valores soportados: SYSTEM(default), LIGHT, DARK.
+    
     page.window_width = 380
     page.window_height = 800
     page.padding = 0
@@ -31,10 +42,13 @@ def main(page: ft.Page):
     #page.client_storage.clear()
 
 
+    Views_history = []
 
     def route_change(route):
         troute = TemplateRoute(page.route)
-        #page.views.clear()
+        page.views.clear()
+
+        Views_history.append( page.route )
 
         if page.route == "/":
 
@@ -125,11 +139,11 @@ def main(page: ft.Page):
 
     def view_pop(view):
 
-        if len(page.views) > 1:
+        #if len(page.views) > 1:
             
-            page.views.pop()
-            top_view = page.views[-1]
-            page.go(top_view.route)
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
 
 
 
@@ -138,12 +152,21 @@ def main(page: ft.Page):
 
     def on_keyboard(e: ft.KeyboardEvent):
 
+
         Logger.debug(f"Key: {e.key}, Shift: {e.shift}, Control: {e.ctrl}, Alt: {e.alt}, Meta: {e.meta}")
 
-        if e.key == 'Escape' or e.key == 'Go Back':
+        Logger.debug( Views_history )
 
-            #print( len(page.views) )
+        if e.key == "Escape" or e.key == "Go Back":
 
+            if len(Views_history) > 1:
+
+                Views_history.pop()
+                top_view = Views_history[-1]
+                Views_history.pop()
+                page.go(top_view)
+            
+            """
             if page.views[0] != page.views[-1]:
                 
                 if len(page.views) > 2:
@@ -155,7 +178,8 @@ def main(page: ft.Page):
 
                         page.views.pop()
                         page.go(top_view.route)
-            
+            """
+
 
     page.on_keyboard_event = on_keyboard
 
@@ -163,10 +187,14 @@ def main(page: ft.Page):
 
 
     def window_event(e):
+
+        Logger.warning( f" Dada BTN: {e.data}" )
+
         if e.data == "close":
             page.dialog = confirm_dialog
             confirm_dialog.open = True
             page.update()
+            
 
     page.window_prevent_close = True
     page.on_window_event = window_event
@@ -201,12 +229,11 @@ def main(page: ft.Page):
 
 
 
-if __name__ == "__main__":
-    
-    ft.app(
-        target=main, 
-        #port=8550, 
-        #view=ft.WEB_BROWSER,
-        route_url_strategy="path",
-        use_color_emoji=True,
-        )
+ 
+ft.app(
+    target=main, 
+    #port=8550, 
+    #view=ft.WEB_BROWSER,
+    route_url_strategy="path",
+    use_color_emoji=True,
+    )

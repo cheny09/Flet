@@ -135,7 +135,7 @@ class PagePlanilla( App, ft.View, ddbb ):
                     color=ft.colors.BLACK,
                     shape={
                         ft.MaterialState.HOVERED: ft.RoundedRectangleBorder(radius=10),
-                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=5),
+                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=0),
                     },
                 ) 
             )
@@ -152,7 +152,7 @@ class PagePlanilla( App, ft.View, ddbb ):
                     color=ft.colors.BLACK,
                     shape={
                         ft.MaterialState.HOVERED: ft.RoundedRectangleBorder(radius=10),
-                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=5),
+                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=0),
                     },
                 ) 
             )
@@ -230,12 +230,12 @@ class PagePlanilla( App, ft.View, ddbb ):
 
             #print(  e.delta_x, e.primary_delta, self.deslizar_on )
             # Deslizamos el dedo o el cursor de izquierda a derecha
-            if e.primary_delta > 5 and self.deslizar_on: 
+            if e.primary_delta > 3 and self.deslizar_on: 
 
                 self.fun_dec_mes()
 
             # Deslizamos el dedo o el cursor de derecha a izquierda
-            if e.primary_delta < -5 and self.deslizar_on:
+            if e.primary_delta < -3 and self.deslizar_on:
 
                 self.fun_inc_mes()
 
@@ -650,7 +650,7 @@ class PagePlanilla( App, ft.View, ddbb ):
 
         self.route= f"/detalle/year/{data['year']}/month/{data['month']}/day/{data['day']}"
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 10, scroll=True )
+        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 10, scroll= ft.ScrollMode.ALWAYS )
 
         #ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
         

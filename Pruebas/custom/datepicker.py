@@ -78,7 +78,7 @@ class DatePicker():
 
         self.retorno = x
 
-        Logger.debug( f"{self.first_date} {self.last_date}" )
+        Logger.debug( f"Rango de fechas limitado entre el {self.first_date} al {self.last_date}" )
 
         self.date_picker_load()
 
@@ -96,7 +96,7 @@ class DatePicker():
 
     def view_calendar( self ):
 
-        ContenedorPrincipal = ft.Column( spacing = 10, width = 480, tight=True, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( spacing = 10, width = 480, tight=True, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
         self.notify_text = ft.Text(f"", bgcolor= ft.colors.RED, )
         ContenedorPrincipal.controls.append( self.notify_text )

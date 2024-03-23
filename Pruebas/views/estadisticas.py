@@ -51,7 +51,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
     def view_stats( self ):
 
-        ContenedorPrincipalPageEstadisticas = ft.Column( expand=1, width = 480, spacing = 10, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipalPageEstadisticas = ft.Column( expand=1, width = 480, spacing = 10, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
 
         ContenedorPrincipalPageEstadisticas.controls.append( ft.Container(
@@ -151,6 +151,21 @@ class PageEstadisticas( App, ft.View, ddbb ):
     def seleccionar_rango_de_fechas_personalizado_stats( self ):
 
         RangeYears = self.range_anios_en_ddbb()
+
+        if RangeYears[0] != 0:
+
+            datetime_init = datetime(RangeYears[0], 1, 1)
+            datetime_fin = datetime(RangeYears[1], 12, 31)
+        
+        else:
+
+            date = datetime.now()
+
+            datetime_init = datetime( date.year, date.month, date.day )
+            datetime_fin = datetime( date.year, date.month, date.day )
+
+        
+        Logger.debug( f"RangeYears: {RangeYears}" )
         
         self.rango_fechas_personalizado = []
 
@@ -160,12 +175,11 @@ class PageEstadisticas( App, ft.View, ddbb ):
             
         def seleccionar_fecha_inicio(x):
 
+        
             date_picker = DatePicker(
                 page= self.page,
-                #on_change=change_date,
-                #on_dismiss=date_picker_dismissed,
-                first_date=datetime(RangeYears[0], 1, 1),
-                last_date=datetime(RangeYears[1], 12, 31),
+                first_date= datetime_init,
+                last_date= datetime_fin,
             )
 
             date_picker.pick_date( x )
@@ -191,10 +205,8 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
             date_picker2 = DatePicker(
                 page= self.page,
-                #on_change=change_date,
-                #on_dismiss=date_picker_dismissed,
-                first_date=datetime(RangeYears[0], 1, 1),
-                last_date=datetime(RangeYears[1], 12, 31),
+                first_date= datetime_init,
+                last_date= datetime_fin,
             )
 
             if fecha_inicio.value == '':

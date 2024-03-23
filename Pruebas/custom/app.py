@@ -19,6 +19,8 @@ from views.template_route import TemplateRoute
 
 from datetime import datetime
 
+import os
+
 LECTOR_QR_IMPORT = False
 
 try:
@@ -62,10 +64,31 @@ class App( funciones ):
             if not self.storage.exists("configuration"):
 
                 self.storage.set("configuration", Config)
+                
+                config_json = '/storage/emulated/0/Android/data/es.cheny.plnbeta/files/Planilla/configuration.json'
+                
+                if os.path.exists( config_json ):
+                    Logger.info( "Existe el archivo configuration.json restaurando configuracion." )
+
+                else:
+                    Logger.info( f"No existe el archivo de conguracion.json")
+                #Archivo /storage/emulated/0/Android/data/es.cheny.plnbeta/files/Planilla/configuration.json creado.
+                
 
             if not self.storage.exists("years"):
 
                 self.storage.set("years", Years)
+
+                years_json = '/storage/emulated/0/Android/data/es.cheny.plnbeta/files/Planilla/years.json'
+                
+                if os.path.exists( years_json ):
+                    Logger.info( "Existe el archivo years.json restaurando years." )
+
+                else:
+                    Logger.info( f"No existe el archivo de years.json")
+                
+
+                #Archivo /storage/emulated/0/Android/data/es.cheny.plnbeta/files/Planilla/years.json creado.
             
 
             self.UserConfiguration = self.storage.get("configuration")
@@ -334,21 +357,38 @@ class App( funciones ):
         
         log = []
         try:
-            with open("out.log", "r") as f:
-                read = f.readlines()
+            read = None
 
-            for line in read:
+            archivo = "out.log"
 
-                log.append( ft.Text( line ) )
+            if os.path.exists( archivo ):
+
+                Logger.debug( f"Abriendo el archivo {archivo}" )
+
+                with open( archivo, "r") as f:
+                    read = f.readlines()
+                    Logger.debug( f"Leyendo el archivo {archivo}" )
+
+                if read:
+
+                    for line in read:
+
+                        log.append( ft.Text( line ) )
+
+
+                    self.show_alert_dialog( Content=log, title='Log')
+            else:
+
+                Logger.debug( f"No existe el archivo {archivo}" )
 
         except Exception as err:
 
-            line = f"Error al abrir archivo Unexpected {err=}, {type( err )=}" 
+            line = f"Error al abrir el archivo {archivo} {err=}, {type( err )=}" 
             log.append( ft.Text( line ) )
-            Logger.error( f"al abrir archivo Unexpected {err=}, {type( err )=}" )
+            Logger.error( line )
                          
 
-        self.show_alert_dialog( Content=log, title='Log')
+        
     
 
 
@@ -735,7 +775,7 @@ class App( funciones ):
         self.dlg_modal = ft.AlertDialog(
             modal=modal, # Si el diálogo se puede descartar haciendo clic en el área de fuera de él.
             title= ft.Row( controls= Title, ),
-            content= ft.Column( controls= Content, width = 480, spacing=10, alignment= ft.MainAxisAlignment.CENTER, tight=True, scroll=True ),
+            content= ft.Column( controls= Content, width = 480, spacing=10, alignment= ft.MainAxisAlignment.CENTER, tight=True, scroll= ft.ScrollMode.ALWAYS, ),
             actions= [ft.Row( controls= Actions )],
             actions_alignment=ft.MainAxisAlignment.END,
             #on_dismiss=lambda e: print("Modal dialog dismissed!"),
@@ -797,7 +837,14 @@ class App( funciones ):
 
 
 
+    
 
+    def show_notify( self, msg = '', color = ft.colors.RED ):
+
+        self.page.snack_bar = ft.SnackBar( ft.Text(f"{msg}"), bgcolor=color )
+        self.page.snack_bar.open = True
+
+        self.page.update()
 
     
     def ayuda( self, *args ):

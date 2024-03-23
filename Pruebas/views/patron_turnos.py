@@ -73,7 +73,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
     def view_patron( self ):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
 
         CardConfigPatronTurnos = ft.Column()
@@ -142,14 +142,10 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
 
 
-        RangeYears = self.range_anios_en_ddbb()
+
 
         date_picker = DatePicker(
             page= self.page,
-            #on_change=change_date,
-            #on_dismiss=date_picker_dismissed,
-            first_date=datetime(RangeYears[0], 2, 1),
-            last_date=datetime(RangeYears[1], 12, 31),
         )
 
 
@@ -161,7 +157,6 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             tooltip = 'Introduce aquí la fecha de inicio para el patron de turnos.',
             multiline=False,
             expand=1,
-            content_padding=5,
             text_align= ft.TextAlign.CENTER,
             )
         #self.FechaInicioPatronTurnos.on_focus= lambda _, x = self.FechaInicioPatronTurnos: date_picker.pick_date( x )
@@ -182,7 +177,6 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             tooltip = 'Introduce aquí la fecha de fin para el patron de turnos.',
             multiline=False,
             expand=1,
-            content_padding=5,
             text_align= ft.TextAlign.CENTER,
             )
         
@@ -273,7 +267,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
     def view_lectorQR( self ):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
         self.LeerQRCode = ft.Column()
         

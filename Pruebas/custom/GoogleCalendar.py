@@ -98,7 +98,7 @@ class MyGoogleCalendar():
 
                 Logger.debug(f"{self.fecha} > Evento creado con éxito!")
             else:
-                Logger.warn(f"{self.fecha} > No existe el id de Google Calendar o esta desactivada la sincronizacion!")
+                Logger.warning(f"{self.fecha} > No existe el id de Google Calendar o esta desactivada la sincronizacion!")
         except Exception as err:              
             Logger.error(f"create_event Unexpected {err=}, {type(err)=}")
 
@@ -146,7 +146,7 @@ class MyGoogleCalendar():
 
                 return list_event_day
             else:
-                Logger.warn(f"No existe el id de Google Calendar o esta desactivada la sincronizacion!")
+                Logger.warning(f"No existe el id de Google Calendar o esta desactivada la sincronizacion!")
                 return {}
                 
         except Exception as err:              
@@ -161,7 +161,7 @@ class MyGoogleCalendar():
                 calendar_service = get_calendar_service( self.page )
                 calendar_service.events().delete(calendarId=self.calendarId, eventId=id).execute()
             else:
-                Logger.warn(f"No existe el id de Google Calendar o esta desactivada la sincronizacion!")
+                Logger.warning(f"No existe el id de Google Calendar o esta desactivada la sincronizacion!")
                 
         except Exception as err:              
             Logger.error(f"delete_event_day Unexpected {err=}, {type(err)=}")

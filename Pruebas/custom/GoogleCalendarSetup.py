@@ -11,12 +11,12 @@ except Exception as err:
 
     def encrypt( encrypted_data: str, secret_key: str ):
 
-        Logger.warn( "Atencion no se pueden encriptar los datos." )
+        Logger.warning( "Atencion no se pueden encriptar los datos." )
         return encrypted_data
     
     def decrypt( encrypted_data: str, secret_key: str ):
 
-        Logger.warn( "Atencion no se pueden encriptar los datos." )
+        Logger.warning( "Atencion no se pueden encriptar los datos." )
         return encrypted_data
 
 

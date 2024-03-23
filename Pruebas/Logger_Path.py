@@ -10,13 +10,13 @@ logging.getLogger("flet_runtime").setLevel(logging.WARNING)
 logging.getLogger("flet.fastapi").setLevel(logging.WARNING)
 
 logging.basicConfig( 
-    level=logging.INFO, 
+    level=logging.DEBUG, 
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
     datefmt='%m/%d/%Y %H:%M:%S',
-    handlers=[
-        logging.FileHandler("out.log"),
-        logging.StreamHandler()
-    ]
+    #handlers=[
+    #    logging.FileHandler("out.log"),
+    #    logging.StreamHandler()
+    #]
 )
 Logger = logging.getLogger('planilla')
 

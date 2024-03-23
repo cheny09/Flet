@@ -254,7 +254,7 @@ class ddbb( funciones ):
             self.storage.set("years", new_data_anios )
 
             Logger.info('La base de datos se ha limpiado.')
-            self.show_alert_dialog( text= "La base de datos se ha limpiado.", title='Base de datos'  )
+            self.show_notify( msg= "La base de datos se ha limpiado.", color='GREEN'  )
      
 
 
@@ -788,17 +788,17 @@ class ddbb( funciones ):
 
                 if str( anio_ ) in self.DataYears:
 
-                    Logger.debug( f" Mostrando el año {anio_}" )
+                    #Logger.debug( f" Mostrando el año {anio_}" )
 
                     if str(mes_) in self.DataYears[str( anio_ )]:
 
                         if anual == False and str( mes_ ) == str( mes ) or anual == True or anual == None:
 
-                            Logger.debug( f" Mostrando el mes {mes_}" )
+                            #Logger.debug( f" Mostrando el mes {mes_}" )
 
                             if str(dia_) in self.DataYears[str( anio_ )][str( mes_ )]:
 
-                                Logger.debug( f" Mostrando el dia {dia_}" )
+                                #Logger.debug( f" Mostrando el dia {dia_}" )
 
                                 mostrar = self.detalle_dia_ddbb( dia_, mes_, anio_, self.UserConfiguration['ID'] )
                                 

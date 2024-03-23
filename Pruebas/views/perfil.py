@@ -57,7 +57,7 @@ class PagePerfil( App, ft.View, ddbb ):
 
     def view_perfil( self ):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 20, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 20, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
         ContenedorPrincipal.controls.append( ft.Container(
             content= ft.Text( 'Convenio:', weight='BOLD' ),
@@ -470,17 +470,21 @@ class PageBackup( App, ft.View, ddbb ):
 
                         if not error:
                             
-                            self.show_alert_dialog( text= f"Se ha creado el backup.", title='Backup Creado' )
+                            self.show_notify( msg= f"Se ha creado el backup.", color='GREEN' )
                         
                         else:
-                            self.show_alert_dialog( text= f"Se ha producido algun error al crear el backup.", title='Backup Error' )
+                            self.show_notify( msg= f"Se ha producido algun error al crear el backup." )
                     
                     elif error:
 
                         Logger.error( 'Se ha producido algun error al crear el backup' )
 
+                        self.show_notify( msg= f"Se ha producido algun error al crear el backup." )
+
                 except Exception as err:              
                     Logger.error( f"Al crear backup Unexpected {err=}, {type( err )=}" )
+
+                    self.show_notify( msg= f"Error al crear backup." )
 
 
 
@@ -490,12 +494,12 @@ class PageBackup( App, ft.View, ddbb ):
 
                 #self.login_db( self.planilla )
 
-                self.show_alert_dialog( text= f"Se ha instalado el backup correctamente.", title='Backup Instalado' )
+                self.show_notify( msg= f"Se ha instalado el backup correctamente.", color='GREEN' )
 
                 self.reload_config()
 
             else:
-                self.show_alert_dialog( text= f"Se ha producido algun error al restaurar el backup.", title='Backup Error' )
+                self.show_notify( msg= f"Se ha producido algun error al restaurar el backup." )
 
 
 
@@ -580,7 +584,7 @@ class PageBackup( App, ft.View, ddbb ):
 
             self.reload_config()
 
-            self.show_alert_dialog( text= f"Se ha restablecido la configuración.", title='Base de datos' )
+            self.show_notify( msg= f"Se ha restablecido la configuración.", color='GREEN' )
 
 
 
@@ -590,11 +594,11 @@ class PageBackup( App, ft.View, ddbb ):
 
             self.reload_config()
 
-            self.show_alert_dialog( text= f"Se ha restablecido la base de datos.", title='Base de datos' )
+            self.show_notify( msg= f"Se ha restablecido la base de datos.", color='GREEN' )
 
 
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 20, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 20, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
         # Este contenedor se agrega para añadir un margen superior
         ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
@@ -695,6 +699,40 @@ class PageBackup( App, ft.View, ddbb ):
                 alignment = ft.alignment.center_left,
                 margin=10,
             ) )
+        
+
+        RowPruebas = ft.Row()
+
+        ContenedorPrincipal.controls.append(RowPruebas)
 
 
+        RowPruebas.controls.append( 
+            ft.IconButton( 
+                ft.icons.PATTERN_SHARP, 
+                on_click= lambda x: self.show_notify( os.path.abspath(__file__) , 'GREEN' )
+            ) 
+        )
+
+        RowPruebas.controls.append( 
+            ft.IconButton( 
+                ft.icons.PATTERN_SHARP, 
+                on_click= lambda x: self.show_notify( os.path.abspath(os.getcwd()) , 'GREEN' )
+            ) 
+        )
+
+        RowPruebas.controls.append( 
+            ft.IconButton( 
+                ft.icons.PATTERN_SHARP, 
+                on_click= lambda x: self.show_notify( os.path.dirname(os.path.abspath(__file__)) , 'GREEN' )
+            ) 
+        )
+
+        RowPruebas.controls.append( 
+            ft.IconButton( 
+                ft.icons.CLEAR_ALL, 
+                on_click= lambda x: self.show_notify( self.page.client_storage.clear() , 'GREEN' )
+            ) 
+        )
+
+        
         return ContenedorPrincipal

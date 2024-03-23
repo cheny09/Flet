@@ -29,7 +29,7 @@ class PageTurnos( App, ft.View, ddbb ):
 
     def view_turnos( self):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
         #ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
         

@@ -52,7 +52,7 @@ class PageSyncGCalendar( App, ft.View, ddbb ):
 
     def view_sync( self ):
 
-        ContenedorPrincipalPageSyncGCalendar = ft.Column( expand=1, width = 480, spacing = 10, scroll=True ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipalPageSyncGCalendar = ft.Column( expand=1, width = 480, spacing = 10, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
         ContenedorPrincipalPageSyncGCalendar.controls.append( ft.Container(
             content= ft.Text( 'Para mostrar todo el año seleccionar mes 0:', weight='BOLD' ),
