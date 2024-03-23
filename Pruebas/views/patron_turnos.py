@@ -234,6 +234,8 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
         self.page_patron_de_turnos()
 
+        self.page.update()
+
 
 
 
@@ -279,6 +281,8 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
         self.page.views.append(self)
 
+        self.page.update()
+
         self.open_camera()
 
 
@@ -301,6 +305,8 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             if self.UserConfiguration['patron_de_turnos'] != {}:
 
                 self.listado_patrones_guardados_dialog()
+        
+        self.page.update()
         
 
 
@@ -745,7 +751,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
             Logger.error( f"listado_patrones_guardados_dialog Unexpected {err=}, {type( err )=}" )
 
 
-
+        self.page.update()
 
     
     def cargar_patron_guardado( self, nombre ):
@@ -951,137 +957,6 @@ class PagePatronTurnos( App, ft.View, ddbb ):
         self.page.update()
     
 
-
-
-    def open_camera( self ):
-        
-        try:
-
-            cap = cv2.VideoCapture(0)
-            
-            while True:
-
-                ret, frame = cap.read()
-
-                if not ret:
-                    break
-    
-                gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-                detector = cv2.QRCodeDetector()
-                data,points,_ = detector.detectAndDecode(gray)
-    
-                # AND IF THE OPENCV FOUND YOU QR CODE AND GET TEXT FROM QRCODE
-                if data:
-                    
-                    cv2.polylines(frame,[np.int32(points)],True,(255,0,0),2,cv2.LINE_AA)
-                    print(f"QR Code YOu Data is : {data}")
-
-                    self.qr_text = data
-
-                    self.read_qr_text()
-                    # AND PUSH TO TEXT WIDGET IF FOUND 
-    
-                    self.LeerQRCode.controls.append(
-                        ft.Text(data,size=25,weight="bold")
-                        )
-                    self.page.update()
-    
-                    cap.release()
-                    # AND CLOSE WINDOW WEBCAM IF FOUND TEXT FROM QRCODE
-                    cv2.destroyAllWindows()
-                    break
-    
-                    # AND IF YOU PRESS q IN WEBCAM WINDOW THEN CLOSE THE WEBCAM
-                cv2.imshow("QR CODE DETECTION ",frame)
-                if cv2.waitKey(1) & 0xFF == ord("q"):
-                    break
-                    # STOP YOU WINDOW
-                
-            if cap.isOpened():
-
-                cap.release()
-                cv2.destroyAllWindows()
-        
-        except Exception as err:
-            Logger.error( f"No se puede abrir el lectorQR Unexpected {err=}, {type( err )=}" )
-
-            self.show_alert_dialog( text= f"No se puede abrir el lectorQR Unexpected {err=}, {type( err )=}", title='Error' )
-
-
-
-
-    def read_qr_text( self ):
-
-        if not self.qr_text == "":
-                    
-    
-            #print( "YOu Qr is : ",self.qr_text )
-            
-            read = ast.literal_eval( self.qr_text ) # Se convierte de string a diccionario
-            
-            if 'patron_de_turnos' in read:
-                
-                print( 'Hay patron' )
-
-                for nombre in read['patron_de_turnos']:
-
-                    name = nombre.decode( 'utf-8' )
-
-                    if not 'patron_de_turnos' in self.UserConfiguration:
-                        self.UserConfiguration['patron_de_turnos'] = {}
-
-                    self.UserConfiguration['patron_de_turnos'][name] = read['patron_de_turnos'][nombre]
-
-                
-            if 'turnos' in read:
-                
-                print( 'Hay turnos' )
-
-                for Id in read['turnos']:
-
-                    
-                    read['turnos'][Id]['nombre'] = read['turnos'][Id]['nombre'].decode( 'utf-8' )
-                    read['turnos'][Id]['siglas'] = read['turnos'][Id]['siglas'].decode( 'utf-8' )
-                    t = read['turnos'][Id]
-
-                    if not 'computo' in t:
-
-                        t["computo"] = '0:0'
-                    
-                    if not 'nocturno' in t:
-
-                        t["nocturno"] = '0:0'
-                    
-                    if not 'color' in t:
-
-                        t["color"] = '#ffffff'
-                    
-                    if not 'userID' in t:
-                    
-                        t["userID"] = 0
-                    
-                    if not 'hora_ini' in t:
-
-                        t["hora_ini"] = '0:0'
-                    
-                    if not 'hora_fin' in t:
-                    
-                        t["hora_fin"] = '0:0'
-                    
-                    if not 'colorGcal' in t:
-                    
-                        t["colorGcal"] = 0
-                    
-
-                    self.UserConfiguration['turnos'][Id] = t
-
-            
-
-            self.listado_turnos_ddbb()
-
-            self.page.go( '/crear_patron' )
-
-            self.page_patron_de_turnos()
 
 
 

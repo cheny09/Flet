@@ -516,45 +516,7 @@ class PageBackup( App, ft.View, ddbb ):
 
                 try:
 
-                    try:
-
-                        with open( fichero, 'r' ) as file:
-                        
-                            conf = json.load( file )
-                            name = os.path.basename( file.name )
-
-                            file_name_sin_extension = Path(name).stem
-
-                    except Exception as err:              
-                        Logger.error( f"Al leeer archivo Unexpected {err=}, {type( err )=}" )
-                        error = True
-                    
-                    else:
-
-                        try:
-                            
-                            #si el fichero es del tipo backup
-                            if name.find( 'backup.json' )>=0:
-                            
-                                for file_name in conf:
-                                    
-                                    file_name_sin_extension = Path(file_name).stem
-
-                                    self.storage.set( file_name_sin_extension, conf[file_name] )
-
-                                    Logger.debug( f"Archivo {file_name_sin_extension} creado." )
-
-                            #si son ficheros sueltos del tipo json
-                            else:
-                                
-                                self.storage.set( file_name_sin_extension, conf )
-
-                                Logger.debug( f"Archivo {file_name_sin_extension} restaurado." )
-
-                            
-                        except Exception as err:              
-                            Logger.error( f"al crear archivo Unexpected {err=}, {type( err )=}" )
-                            error = True
+                    error = self.file_json_to_store( fichero )
 
                 except Exception as e:
                     pass
@@ -729,7 +691,8 @@ class PageBackup( App, ft.View, ddbb ):
 
         RowPruebas.controls.append( 
             ft.IconButton( 
-                ft.icons.CLEAR_ALL, 
+                ft.icons.DELETE, 
+                tooltip="Eliminar toda la base de datos 'Storage.clean()'",
                 on_click= lambda x: self.show_notify( self.page.client_storage.clear() , 'GREEN' )
             ) 
         )

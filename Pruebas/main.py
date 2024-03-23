@@ -139,11 +139,12 @@ def main(page: ft.Page):
 
     def view_pop(view):
 
-        #if len(page.views) > 1:
-            
-        page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
+        if len(Views_history) > 1:
+
+            Views_history.pop()
+            top_view = Views_history[-1]
+            Views_history.pop()
+            page.go(top_view)
 
 
 
@@ -159,26 +160,8 @@ def main(page: ft.Page):
 
         if e.key == "Escape" or e.key == "Go Back":
 
-            if len(Views_history) > 1:
-
-                Views_history.pop()
-                top_view = Views_history[-1]
-                Views_history.pop()
-                page.go(top_view)
+            view_pop(e)
             
-            """
-            if page.views[0] != page.views[-1]:
-                
-                if len(page.views) > 2:
-                    
-                    page.views.pop()
-                    top_view = page.views[-1]
-
-                    if top_view.route != page.route and top_view.route != None:
-
-                        page.views.pop()
-                        page.go(top_view.route)
-            """
 
 
     page.on_keyboard_event = on_keyboard
@@ -223,7 +206,7 @@ def main(page: ft.Page):
     #page.window_center()
     page.on_route_change = route_change
     page.on_view_pop = view_pop
-    page.go(page.route)
+    page.go( page.route )
 
 
 

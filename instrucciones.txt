@@ -40,3 +40,9 @@ SET MY_APP_SECRET_KEY="GVUYAgsyt56tyA"
 
 
 keytool -importkeystore -srckeystore C:\Users\cheny09\.keystore\cheny_key.keystore -destkeystore C:\Users\cheny09\.keystore\cheny_key.keystore -deststoretype pkcs12
+
+
+# INSTALAR EN Android
+
+adb kill-server; adb -s 5ae5eb9d install C:\Users\cheny09\Documents\Flet\Pruebas\build\apk\app-release.apk
+

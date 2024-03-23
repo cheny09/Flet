@@ -18,6 +18,7 @@ from custom.GoogleCalendar import MyGoogleCalendar
 from views.template_route import TemplateRoute
 
 from datetime import datetime
+import json
 
 import os
 
@@ -70,6 +71,8 @@ class App( funciones ):
                 if os.path.exists( config_json ):
                     Logger.info( "Existe el archivo configuration.json restaurando configuracion." )
 
+                    self.file_json_to_store( config_json )
+
                 else:
                     Logger.info( f"No existe el archivo de conguracion.json")
                 #Archivo /storage/emulated/0/Android/data/es.cheny.plnbeta/files/Planilla/configuration.json creado.
@@ -83,6 +86,8 @@ class App( funciones ):
                 
                 if os.path.exists( years_json ):
                     Logger.info( "Existe el archivo years.json restaurando years." )
+
+                    self.file_json_to_store( years_json )
 
                 else:
                     Logger.info( f"No existe el archivo de years.json")
@@ -543,11 +548,7 @@ class App( funciones ):
         #print( kwargs )
         if self.MyCamera != None:
 
-            if self.MyCamera.isOpened():
-
-                self.MyCamera.release()
-                cv2.destroyAllWindows()
-                self.MyCamera = None
+            self.MyCamera = None
 
 
         if route != None:
@@ -845,6 +846,209 @@ class App( funciones ):
         self.page.snack_bar.open = True
 
         self.page.update()
+
+
+
+
+    
+    def open_camera( self ):
+        
+        try:
+
+            cam = cv2.VideoCapture(0)
+
+            self.MyCamera = True
+            
+            while True:
+
+                ret, frame = cam.read()
+
+                if not ret:
+                    break
+
+                if self.MyCamera == None:
+                    
+                    cam.release()
+                    # AND CLOSE WINDOW WEBCAM IF FOUND TEXT FROM QRCODE
+                    cv2.destroyAllWindows()
+                    break
+    
+                gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+                detector = cv2.QRCodeDetector()
+                data,points,_ = detector.detectAndDecode(gray)
+    
+                # AND IF THE OPENCV FOUND YOU QR CODE AND GET TEXT FROM QRCODE
+                if data:
+                    
+                    cv2.polylines(frame,[np.int32(points)],True,(255,0,0),2,cv2.LINE_AA)
+                    print(f"QR Code YOu Data is : {data}")
+
+                    self.qr_text = data
+
+                    self.read_qr_text()
+                    # AND PUSH TO TEXT WIDGET IF FOUND 
+    
+                    self.LeerQRCode.controls.append(
+                        ft.Text(data,size=25,weight="bold")
+                        )
+                    self.page.update()
+    
+                    cam.release()
+                    # AND CLOSE WINDOW WEBCAM IF FOUND TEXT FROM QRCODE
+                    cv2.destroyAllWindows()
+
+                    self.MyCamera = None
+                    break
+    
+                    # AND IF YOU PRESS q IN WEBCAM WINDOW THEN CLOSE THE WEBCAM
+                cv2.imshow("QR CODE DETECTION ",frame)
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+
+                    cam.release()
+                    # AND CLOSE WINDOW WEBCAM IF FOUND TEXT FROM QRCODE
+                    cv2.destroyAllWindows()
+
+                    self.MyCamera = None
+                    break
+                    # STOP YOU WINDOW
+                
+            if self.MyCamera != None: 
+
+                if cam.isOpened():
+
+                    cam.release()
+                    cv2.destroyAllWindows()
+
+                    self.MyCamera = None
+        
+        except Exception as err:
+            Logger.error( f"No se puede abrir el lectorQR Unexpected {err=}, {type( err )=}" )
+
+            self.show_alert_dialog( text= f"No se puede abrir el lectorQR Unexpected {err=}, {type( err )=}", title='Error' )
+
+
+
+
+    def read_qr_text( self ):
+
+        if not self.qr_text == "":
+                    
+    
+            #print( "YOu Qr is : ",self.qr_text )
+            
+            read = ast.literal_eval( self.qr_text ) # Se convierte de string a diccionario
+            
+            if 'patron_de_turnos' in read:
+                
+                Logger.info( 'Hay patron' )
+
+                for nombre in read['patron_de_turnos']:
+
+                    name = nombre.decode( 'utf-8' )
+
+                    if not 'patron_de_turnos' in self.UserConfiguration:
+                        self.UserConfiguration['patron_de_turnos'] = {}
+
+                    self.UserConfiguration['patron_de_turnos'][name] = read['patron_de_turnos'][nombre]
+
+                
+            if 'turnos' in read:
+                
+                Logger.info( 'Hay turnos' )
+
+                for Id in read['turnos']:
+
+                    
+                    read['turnos'][Id]['nombre'] = read['turnos'][Id]['nombre'].decode( 'utf-8' )
+                    read['turnos'][Id]['siglas'] = read['turnos'][Id]['siglas'].decode( 'utf-8' )
+                    t = read['turnos'][Id]
+
+                    if not 'computo' in t:
+
+                        t["computo"] = '0:0'
+                    
+                    if not 'nocturno' in t:
+
+                        t["nocturno"] = '0:0'
+                    
+                    if not 'color' in t:
+
+                        t["color"] = '#ffffff'
+                    
+                    if not 'userID' in t:
+                    
+                        t["userID"] = 0
+                    
+                    if not 'hora_ini' in t:
+
+                        t["hora_ini"] = '0:0'
+                    
+                    if not 'hora_fin' in t:
+                    
+                        t["hora_fin"] = '0:0'
+                    
+                    if not 'colorGcal' in t:
+                    
+                        t["colorGcal"] = 0
+                    
+
+                    self.UserConfiguration['turnos'][Id] = t
+
+            self.storage.set("configuration", self.UserConfiguration)
+
+
+            self.listado_turnos_ddbb()
+
+            self.page.go( '/crear_patron' )
+
+
+
+
+
+    def file_json_to_store( self, fichero ):
+
+        try:
+
+            with open( fichero, 'r' ) as file:
+            
+                conf = json.load( file )
+                name = os.path.basename( file.name )
+
+                file_name_sin_extension = Path(name).stem
+
+        except Exception as err:              
+            Logger.error( f"Al leeer archivo Unexpected {err=}, {type( err )=}" )
+            error = True
+        
+        else:
+
+            try:
+                
+                #si el fichero es del tipo backup
+                if name.find( 'backup.json' )>=0:
+                
+                    for file_name in conf:
+                        
+                        file_name_sin_extension = Path(file_name).stem
+
+                        self.storage.set( file_name_sin_extension, conf[file_name] )
+
+                        Logger.debug( f"Archivo {file_name_sin_extension} creado." )
+
+                #si son ficheros sueltos del tipo json
+                else:
+                    
+                    self.storage.set( file_name_sin_extension, conf )
+
+                    Logger.debug( f"Archivo {file_name_sin_extension} restaurado." )
+
+                
+            except Exception as err:              
+                Logger.error( f"al crear archivo Unexpected {err=}, {type( err )=}" )
+                error = True
+
+        return error
+
 
     
     def ayuda( self, *args ):
