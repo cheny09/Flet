@@ -13,9 +13,12 @@ from views.patron_turnos import PagePatronTurnos
 from views.sync_google_calendar import PageSyncGCalendar
 
 
-
 def main(page: ft.Page):
-    
+
+    page.splash = ft.Container( content= ft.ProgressRing(width=50, height=50, stroke_width = 15), alignment=ft.alignment.center )
+
+    page.update()
+
     page.session.clear()
 
     page.title = "Planilla"
@@ -49,6 +52,13 @@ def main(page: ft.Page):
         page.views.clear()
 
         Views_history.append( page.route )
+
+        page.views.append(
+            ft.View(
+                "/",
+                [],
+            )
+        )
 
         if page.route == "/":
 
@@ -135,7 +145,7 @@ def main(page: ft.Page):
         page.update()
 
 
-    page.on_route_change = route_change
+
 
     def view_pop(view):
 
@@ -146,6 +156,11 @@ def main(page: ft.Page):
             Views_history.pop()
             page.go(top_view)
 
+        #else:
+
+        #    page.dialog = confirm_dialog
+        #    confirm_dialog.open = True
+        #    page.update()
 
 
 
@@ -164,14 +179,10 @@ def main(page: ft.Page):
             
 
 
-    page.on_keyboard_event = on_keyboard
-
-
-
 
     def window_event(e):
 
-        Logger.warning( f" Dada BTN: {e.data}" )
+        Logger.warning( f" Dada WINDOW: {e.data}" )
 
         if e.data == "close":
             page.dialog = confirm_dialog
@@ -179,8 +190,6 @@ def main(page: ft.Page):
             page.update()
             
 
-    page.window_prevent_close = True
-    page.on_window_event = window_event
 
     def yes_click(e):
         page.window_destroy()
@@ -202,13 +211,17 @@ def main(page: ft.Page):
 
 
 
-
+    page.on_route_change = route_change
+    page.on_keyboard_event = on_keyboard
+    page.window_prevent_close = True
+    page.on_window_event = window_event
     #page.window_center()
     page.on_route_change = route_change
     page.on_view_pop = view_pop
+    page.splash = None
     page.go( page.route )
 
-
+   
 
 
 
@@ -216,7 +229,7 @@ def main(page: ft.Page):
 ft.app(
     target=main, 
     #port=8550, 
-    #view=ft.WEB_BROWSER,
+    #view=ft.AppView.FLET_APP_WEB,
     route_url_strategy="path",
-    use_color_emoji=True,
+    #use_color_emoji=True,
     )

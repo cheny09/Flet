@@ -44,6 +44,8 @@ class PagePlanilla( App, ft.View, ddbb ):
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
 
+        
+
         if not self.page.session.contains_key( "FechaSeleccionada" ):
 
             self.page.session.set( "FechaSeleccionada", self.FechaSeleccionada )
@@ -650,7 +652,7 @@ class PagePlanilla( App, ft.View, ddbb ):
 
         self.route= f"/detalle/year/{data['year']}/month/{data['month']}/day/{data['day']}"
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 10, scroll= ft.ScrollMode.ALWAYS )
+        ContenedorPrincipal = ft.Column( width = 480, spacing = 10 )
 
         #ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
         
@@ -793,9 +795,13 @@ class PagePlanilla( App, ft.View, ddbb ):
 
         #return ft.Container( content = ContenedorPrincipal, padding=10, expand=1 )
         
-        self.controls.append( ft.Container( content = ContenedorPrincipal, padding=10, expand=1 ) )
+        self.controls.append( ft.Container( content = ContenedorPrincipal, padding=15 ) )
 
         self.page.views.append( self )
+
+        self.scroll= ft.ScrollMode.ALWAYS
+        self.expand = 1
+        self.padding = 5
 
 
         self.detalle_dia( dia = data['day'] , mes = data['month'] , anio = data['year']  )

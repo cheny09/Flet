@@ -69,11 +69,15 @@ class PagePatronTurnos( App, ft.View, ddbb ):
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
 
+        self.scroll= ft.ScrollMode.ALWAYS
+        self.expand = 1
+        self.padding = 5
+
 
 
     def view_patron( self ):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( width = 480, spacing = 15, ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
 
         CardConfigPatronTurnos = ft.Column()
@@ -228,7 +232,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
         #return ContenedorPrincipal
 
         self.route= "/crear_patron"
-        self.controls.append( ContenedorPrincipal )
+        self.controls.append( ft.Container( content = ContenedorPrincipal, padding=15 ) )
 
         self.page.views.append(self)
 
@@ -269,7 +273,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
     def view_lectorQR( self ):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( width = 480, spacing = 15, ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
         self.LeerQRCode = ft.Column()
         
@@ -277,7 +281,7 @@ class PagePatronTurnos( App, ft.View, ddbb ):
 
         #return ContenedorPrincipal
         self.route= "/leer_qr"
-        self.controls.append( ContenedorPrincipal )
+        self.controls.append( ft.Container( content = ContenedorPrincipal, padding=20 ) )
 
         self.page.views.append(self)
 

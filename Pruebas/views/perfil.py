@@ -41,10 +41,16 @@ class PagePerfil( App, ft.View, ddbb ):
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
 
+        self.scroll= ft.ScrollMode.ALWAYS
+        self.expand = 1
+        self.padding = 5
+
         self.route= "/perfil"
         self.controls.append( self.view_perfil() )
 
         self.page.views.append(self)
+
+        self.page.on_login = self.on_login
 
         self.mi_perfil()
 
@@ -57,7 +63,7 @@ class PagePerfil( App, ft.View, ddbb ):
 
     def view_perfil( self ):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 20, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( width = 480, spacing = 20,  ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
         ContenedorPrincipal.controls.append( ft.Container(
             content= ft.Text( 'Convenio:', weight='BOLD' ),
@@ -170,6 +176,8 @@ class PagePerfil( App, ft.View, ddbb ):
 
                 self.CheckboxSyncGoogleCalendar.value = False
 
+                self.CheckboxSyncGoogleCalendar.update()
+
                 self.guardar_perfil()
 
 
@@ -192,10 +200,19 @@ class PagePerfil( App, ft.View, ddbb ):
                     ft.Container(content=self.GuardarPerfil, alignment = ft.alignment.center_right, expand=1) ],
                 
             ) )
+        
+
+        ContenedorPrincipal.controls.append( 
+            ft.IconButton( 
+                ft.icons.LOGIN, 
+                tooltip="Iniciar sesion en google",
+                on_click= lambda x: self.login_google()
+            ) 
+        )
                 
         
 
-        return ContenedorPrincipal
+        return ft.Container( content = ContenedorPrincipal, padding=20 )
 
 
     
@@ -373,6 +390,29 @@ class PagePerfil( App, ft.View, ddbb ):
 
 
 
+    def login_google( self ):
+
+        self.page.login(
+            GOOGLE_PROVIDER,
+            scope= SCOPES,
+            on_open_authorization_url=lambda url: self.page.launch_url(url, web_window_name="_blank" )
+        )
+
+    def on_login(self, e):
+        print("Login error:", e.error)
+        print("Access token:", self.page.auth.token.to_json())
+        print("User ID:", self.page.auth.user.id)
+
+        self.page.client_storage.set( 'token_google', encrypt(self.page.auth.token.to_json(), SECRET_KEY ) )
+
+        self.show_notify( f"User ID:, {self.page.auth.user}" )
+
+        
+
+
+
+
+
 
 
 
@@ -386,6 +426,10 @@ class PageBackup( App, ft.View, ddbb ):
 
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
+
+        self.scroll= ft.ScrollMode.ALWAYS
+        self.expand = 1
+        self.padding = 5
 
         self.route= "/backup"
         self.controls.append( self.view_backup() )
@@ -560,7 +604,7 @@ class PageBackup( App, ft.View, ddbb ):
 
 
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 20, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( width = 480, spacing = 20, ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
         # Este contenedor se agrega para añadir un margen superior
         ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
@@ -698,4 +742,4 @@ class PageBackup( App, ft.View, ddbb ):
         )
 
         
-        return ContenedorPrincipal
+        return ft.Container( content = ContenedorPrincipal, padding=20 )

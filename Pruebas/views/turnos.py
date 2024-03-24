@@ -16,6 +16,10 @@ class PageTurnos( App, ft.View, ddbb ):
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
 
+        self.scroll= ft.ScrollMode.ALWAYS
+        self.expand = 1
+        self.padding = 5
+
         self.route= "/turnos_edit"
 
         self.controls.append( self.view_turnos() )
@@ -29,7 +33,7 @@ class PageTurnos( App, ft.View, ddbb ):
 
     def view_turnos( self):
 
-        ContenedorPrincipal = ft.Column( expand=1, width = 480, spacing = 15, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipal = ft.Column( width = 480, spacing = 15, ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
 
         #ContenedorPrincipal.controls.append( ft.Container( height=10 ) )
         
@@ -376,16 +380,19 @@ class PageTurnos( App, ft.View, ddbb ):
                     on_click= lambda x: self.fun_guardar_turno()
                 )
         
+        self.EliminarTurno = ft.IconButton( icon= ft.icons.DELETE, icon_color='RED', icon_size=40, on_click= lambda x: self.fun_eliminar_turno())
+        
+
         ContenedorPrincipal.controls.append( 
             ft.Row(
                 [
-                    ft.IconButton( icon= ft.icons.DELETE, icon_color='RED', icon_size=40, on_click= lambda x: self.fun_eliminar_turno()),
+                    self.EliminarTurno,
                     ft.Container( self.GuardarTurnoEdit, alignment = ft.alignment.center_right, expand=1 ),
                 ],
                 
             ) )
 
-        return ft.Container( content = ContenedorPrincipal, padding=10, expand=1 )
+        return ft.Container( content = ContenedorPrincipal, padding=20 )
 
 
 
@@ -398,6 +405,9 @@ class PageTurnos( App, ft.View, ddbb ):
             if data['id_turno'] != '0' and data['id_turno'] != 0:
 
                 self.TextTitle.value = self.page.title = 'Editar Turno'
+
+                self.EliminarTurno.icon_color = 'RED'
+                self.EliminarTurno.disabled = False
 
                 ID_Array_Turno= str( data['id_turno'] )
                 turno = self.ListadoTurnos[ID_Array_Turno]
@@ -444,6 +454,9 @@ class PageTurnos( App, ft.View, ddbb ):
             else:
 
                 self.TextTitle.value = self.page.title = 'Nuevo Turno'
+
+                self.EliminarTurno.icon_color = '#00000000'
+                self.EliminarTurno.disabled = True
 
                 self.NombreTurnoEdit.value = ''
                 self.SiglasTurnoEdit.value = ''
@@ -521,7 +534,9 @@ class PageTurnos( App, ft.View, ddbb ):
         res = self.eliminar_turno( self.idTurnoEdit )
         if res == 'Turno eliminado con éxito.':
             self.listado_turnos_ddbb()
-            self.listado_turnos( ventana = '/turnos_edit' )
+            self.edit_turno( data= { 'id_turno': 0 } )
+            #self.listado_turnos( ventana = '/turnos_edit' )
+            self.show_notify( res, 'GREEN' )
         else:
             Logger.warning( res )
             self.show_alert_dialog( text=str( res ), title='Error' )

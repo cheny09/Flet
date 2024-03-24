@@ -42,6 +42,10 @@ class PageEstadisticas( App, ft.View, ddbb ):
         self.appbar= self.MainAppBar
         self.horizontal_alignment= ft.CrossAxisAlignment.CENTER
 
+        self.scroll= ft.ScrollMode.ALWAYS
+        self.expand = 1
+        self.padding = 5
+
         self.rango_fechas_personalizado = None
 
         self.view_stats()
@@ -51,7 +55,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
 
     def view_stats( self ):
 
-        ContenedorPrincipalPageEstadisticas = ft.Column( expand=1, width = 480, spacing = 10, scroll= ft.ScrollMode.ALWAYS ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
+        ContenedorPrincipalPageEstadisticas = ft.Column( width = 480, spacing = 10 ) # Con el width se asigna el ancho maximo de la app aun que se pongo en pantalla completa
         
 
         ContenedorPrincipalPageEstadisticas.controls.append( ft.Container(
@@ -141,7 +145,7 @@ class PageEstadisticas( App, ft.View, ddbb ):
         #return ContenedorPrincipalPageEstadisticas
     
         self.route= "/stats"
-        self.controls.append( ContenedorPrincipalPageEstadisticas )
+        self.controls.append( ft.Container( content = ContenedorPrincipalPageEstadisticas, padding=20 ) )
 
         self.page.views.append(self)
 

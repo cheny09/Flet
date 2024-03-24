@@ -189,7 +189,8 @@ class App( funciones ):
                 toolbar_height = 80,
                 title = self.TextTitle,
                 center_title = False,
-                bgcolor = ft.colors.PRIMARY_CONTAINER,
+                bgcolor = ft.colors.PRIMARY,
+                color = ft.colors.SURFACE,
                 actions = [
                     #ft.IconButton( ft.icons.DOCUMENT_SCANNER, on_click=lambda x: self.log_read()),
                     ft.IconButton( ft.icons.QUESTION_MARK, scale = 1.25, tooltip = 'Mostrar Ayuda', on_click=lambda _: self.ayuda() ),
